@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset name="general">
+		<field name="freight" type="number" required="true"/>
+		<field name="inam" type="number" required="true"/>
+	</fieldset>
+</form>

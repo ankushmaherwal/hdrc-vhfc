@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset name="general" addfieldpath="/administrator/components/com_categories/models/fields">
+		<field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
+		<field name="destination" type="destinationslist" label="COM_TMS_ACCOUNT_TITLE" description="COM_TMS_ACCOUNT_TITLE_DESC" size="50" required="true" />
+		<field name="box_weight" type="subform" formsource="administrator/components/com_tms/models/forms/freight_item.xml"" multiple="true" label="Subform Field" description="Subform Field Description" />
+	</fieldset>
+</form>

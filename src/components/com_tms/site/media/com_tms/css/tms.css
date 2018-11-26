@@ -1,0 +1,47 @@
+/**
+ * @package    TMS
+ * @author     Ankushkumar Maherwal <ankush.maherwal@gmail.com>
+ * @copyright  Copyright (c) 2018-2018 Ankushkumar Maherwal. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+/* chalan form view - start */
+#tms-wrapper .tms-chalan .subform-repeatable .adminlist thead tr th:first-child, #tms-wrapper .tms-chalan .subform-repeatable .adminlist tbody tr td:first-child, #tms-wrapper .tms-chalan .subform-repeatable .adminlist thead tr th:nth-last-child(2), #tms-wrapper .tms-chalan .subform-repeatable .adminlist tbody tr td:nth-last-child(2){
+	display:none;
+}
+
+#tms-wrapper .tms-chalan .span6{
+	margin-left:0px !important;
+}
+
+#tms-wrapper .tms-chalan .span6:first-child{
+	display:none;
+}
+
+#tms-wrapper .tms-chalan .chzn-container{
+	width:150px !important;
+}
+/* chalan form view - end */
+
+/* vehicle form view - start */
+#tms-wrapper .tms-vehicle-form #jform_registration_number{
+	text-transform:uppercase;
+}
+/* vehicle form view - end */
+
+/* chalan printout- start */
+#tms-wrapper #printChalanContent .chalan-header{
+	text-align: center;
+}
+/* chalan printout - end */
+
+#tms-wrapper .d-none{
+	display:none;
+}
+
+/* set freight view - start*/
+#tms-wrapper .tms-freight .span6{
+	margin-left:0px !important;
+	margin-right:15px !important;
+}
+/* set freight view - end*/

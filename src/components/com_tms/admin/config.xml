@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset name="general" label="COM_TMS_CONFIG_GENERAL">
+		<field name="destinations_list" type="textarea" label="COM_TMS_CONFIG_GENERAL_DESTINATION_LBL" description="COM_TMS_CONFIG_GENERAL_DESTINATION_DESC" cols="10" rows="10"/>
+		<field name="company_account" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_CONFIG_GENERAL_COMPANY_ACCOUNT_LBL" description="COM_TMS_CONFIG_GENERAL_COMPANY_ACCOUNT_DESC" default="">
+			<option value="">COM_TMS_CONFIG_GENERAL_SELECT_COMPANY_ACCOUNT</option>
+		</field>
+	</fieldset>
+	<fieldset name="chalan" label="COM_TMS_CONFIG_CHALAN_PRINT" description="COM_TMS_CONFIG_CHALAN_PRINT_DESC">
+		<field name="ch_jurisdiction" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_JURISDICTION_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_JURISDICTION_DESC" />
+		<field name="ch_owners_name" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_OWNERS_NAME_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_OWNERS_NAME_DESC" />
+		<field name="ch_contact_number" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_OWNER_CONTACT_NUMBER_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_OWNER_CONTACT_NUMBER_DESC" />
+		<field name="ch_company_name" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_NAME_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_NAME_DESC" />
+		<field name="ch_company_name_short" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_NAME_SHORT_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_NAME_SHORT_DESC" />
+		<field name="ch_company_address" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_ADDRESS_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_ADDRESS_DESC" />
+		<field name="ch_company_address" type="text" label="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_ADDRESS_LBL" description="COM_TMS_CONFIG_CHALAN_PRINT_COMPANY_ADDRESS_DESC" />
+	</fieldset>
+	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
+		<field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" class="inputbox" validate="rules" filter="rules" component="com_tms" section="component" />
+	</fieldset>
+</config>

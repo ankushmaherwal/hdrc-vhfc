@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset name="general" addfieldpath="/administrator/components/com_categories/models/fields">
+		<field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
+		<field name="party_name" type="text" label="COM_TMS_CHALAN_PARTY_NAME" description="COM_TMS_CHALAN_PARTY_NAME_DESC" required="true" default="" />
+		<field name="destination" type="destinationslist" label="COM_TMS_CHALAN_DESTINATION" description="COM_TMS_CHALAN_DESTINATION_DESC" required="true" default="">
+			<option value="">COM_TMS_CHALAN_SELECT_DESTINATION</option>
+		</field>
+		<field name="vehicle_id" type="sql" query="SELECT id, registration_number FROM #__transport_vehicle" key_field="id" value_field="registration_number" sql_where="published=1" label="COM_TMS_CHALAN_VEHICLE_ID" description="COM_TMS_CHALAN_VEHICLE_ID" required="true" default="">
+			<option value="">COM_TMS_CHALAN_SELECT_VEHICLE</option>
+		</field>
+		<field name="date" type="calendar" label="COM_TMS_CHALAN_DATE" description="COM_TMS_CHALAN_DATE_DESC" required="true" translateformat="true" showtime="true" size="22"/>
+		<field name="total_freight" type="number" label="COM_TMS_CHALAN_TOTLA_FREIGHT" description="COM_TMS_CHALAN_TOTLA_FREIGHT_DESC" required="true"/>
+		<field name="advance" type="number" label="COM_TMS_CHALAN_ADVANCE" description="COM_TMS_CHALAN_ADVANCE_DESC" />
+		<field name="drivers_contact" type="number" class="validate validate-contactnumber" label="COM_TMS_CHALAN_DRIVER_CONTACT" description="COM_TMS_CHALAN_DRIVER_CONTACT_DESC"/>
+		<field name="chalan_items" type="subform" required="true" formsource="administrator/components/com_tms/models/forms/chalan_item.xml" multiple="true" min="10" layout="joomla.form.field.subform.repeatable-table" />
+		<field name="created" type="hidden" />
+		<field name="created_by" type="hidden" />
+		<field name="modified" type="hidden" />
+		<field name="modified_by" type="hidden" />
+	</fieldset>
+</form>
