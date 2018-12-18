@@ -27,12 +27,19 @@ Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tms/tables');
 $vehicleTable = Table::getInstance('Vehicle', 'TmsTable', array('dbo', $db));
 $vehicleTable->load(array('id' => $formData->get('vehicle_id')));
 $vehicle_number = $vehicleTable->registration_number;
-
+?>
+<style>
+.chalan-print tr {
+	height:30px !important;
+}
+</style>
+<?php
 if (!empty($formData))
 {
 	$chalanItems = $formData->get('chalan_items');
+	$thirdPartyPaid = $formData->get('third_party_paid');
 	?>
-	<div style="padding:15px;border-style:ridge;">
+	<div style="padding:15px;border-style:ridge;" class="chalan-print">
 		<div>
 			<table>
 				<tr>
@@ -78,12 +85,15 @@ if (!empty($formData))
 						<span><?php echo $formData->get('party_name');?></span>
 					</td>
 				</tr>
+				<br />
 				<tr>
 					<td colspan="3">
 						<span style="font-weight: bold;"><?php echo Text::_("COM_TMS_PRINT_CHALAN_DELIVERY_NOTE")?></span>
 					</td>
 				</tr>
 			</table>
+			<br />
+
 			<table style="border-collapse:collapse;border:1px solid black;">
 				<tr>
 					<th style="width:5%;border:1px solid black;">GM.No.</th>
@@ -94,35 +104,53 @@ if (!empty($formData))
 					<th style="width:10%;border:1px solid black;">Freight</th>
 					<th style="width:10%;border:1px solid black;">Inam</th>
 					<th style="width:15%;border:1px solid black;">Shop No.</th>
-					<th style="width:10%;border:1px solid black;">Remarks</th>
 				</tr>
 				<?php
 				$totalUnits = 0;
 				$totalFreight = 0;
 				$totalInam = 0;
 
-				foreach ($chalanItems as $k => $chalanItem)
+				for ($i = 0; $i < 15; $i++)
 				{
+					if (!isset($chalanItems[$i+1]) && $i<15)
+					{
+						$chalanItems[$i+1] = array('id' => '', 'chalan_id' => '', 'sender_party' => '', 'receiver_party' => '', 'trade_mark' => '', 'units' => '', 'weight' => '', 'freight' => '', 'inam' => '', 'billt_paid_id' => '', 'billt_paid' => '');
+					}
+
+					$chalanItem = $chalanItems[$i];
+
 					?>
 					<tr style="text-align:center;">
-						<td style="width:5%;border:1px solid black;"><?php echo $k+1;?></td>
+						<td style="width:5%;border:1px solid black;"><?php echo $i+1;?></td>
 						<?php
 							$accountTable = Table::getInstance('Account', 'TmsTable', array('dbo', $db));
 							$accountTable->load(array('id' => $chalanItem['sender_party']));
 							$senderParty = $accountTable->title;
+							$accountTable->load(array('id' => $chalanItem['receiver_party']));
+							$receiverParty = $accountTable->title;
+							$freight = ($chalanItem['freight']*$chalanItem['units']);
+
+							if (isset($chalanItem['billt_paid']))
+							{
+								$freight -= $chalanItem['billt_paid'];
+							}
+
+							$inam = $chalanItem['inam'] * $chalanItem['units'];
+
+							$inam = empty($inam) ? '' : $inam;
+							$freight = empty($freight) ? '' : $freight;
 						?>
 						<td style="width:15%;border:1px solid black;"><?php echo $senderParty;?></td>
-						<td style="width:15%;border:1px solid black;"><?php echo $chalanItem['sender'];?></td>
+						<td style="width:15%;border:1px solid black;"><?php echo $chalanItem['trade_mark'];?></td>
 						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['weight'];?></td>
 						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['units'];?></td>
-						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['freight']*$chalanItem['units'];?></td>
-						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['inam']*$chalanItem['units'];?></td>
-						<td style="width:15%;border:1px solid black;"><?php echo $chalanItem['receiver'];?></td>
-						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['remarks'];?></td>
+						<td style="width:10%;border:1px solid black;"><?php echo $freight;?></td>
+						<td style="width:10%;border:1px solid black;"><?php echo $inam;?></td>
+						<td style="width:15%;border:1px solid black;"><?php echo $receiverParty;?></td>
 					</tr>
 					<?php
 					$totalUnits = $totalUnits + $chalanItem['units'];
-					$totalFreight = $totalFreight + ($chalanItem['freight']*$chalanItem['units']);
+					$totalFreight = $totalFreight + $freight;
 					$totalInam = $totalInam + ($chalanItem['inam']*$chalanItem['units']);
 				}
 				?>
@@ -135,7 +163,24 @@ if (!empty($formData))
 				</tr>
 			</table>
 			<br />
-			<br />
+			<?php
+				if (!empty($thirdPartyPaid))
+				{
+					echo Text::_("COM_TMS_PRINT_CHALAN_NOTE");
+
+					foreach ($thirdPartyPaid as $paid)
+					{
+						$accountTable = Table::getInstance('Account', 'TmsTable', array('dbo', $db));
+						$accountTable->load(array('id' => $paid['third_party_paid']));
+
+						echo Text::sprintf("COM_TMS_PRINT_CHALAN_PAID_NOTE", $paid['chalan_billt_paid'], $accountTable->title);
+					}
+				}
+				else
+				{
+					echo "<br /><br />";
+				}
+			?>
 			<div>
 			<?php echo Text::_("COM_TMS_PRINT_CHALAN_DRIVERS_UNDERTAKING");?>
 			</div>

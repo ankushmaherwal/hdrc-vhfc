@@ -14,6 +14,7 @@
 		<field name="advance" type="number" label="COM_TMS_CHALAN_ADVANCE" description="COM_TMS_CHALAN_ADVANCE_DESC" />
 		<field name="drivers_contact" type="number" class="validate validate-contactnumber" label="COM_TMS_CHALAN_DRIVER_CONTACT" description="COM_TMS_CHALAN_DRIVER_CONTACT_DESC"/>
 		<field name="chalan_items" type="subform" required="true" formsource="administrator/components/com_tms/models/forms/chalan_item.xml" multiple="true" min="10" layout="joomla.form.field.subform.repeatable-table" />
+		<field name="third_party_paid" type="subform" formsource="administrator/components/com_tms/models/forms/chalan_third_party_paid.xml" multiple="true" min="0" layout="joomla.form.field.subform.repeatable-table" />
 		<field name="created" type="hidden" />
 		<field name="created_by" type="hidden" />
 		<field name="modified" type="hidden" />

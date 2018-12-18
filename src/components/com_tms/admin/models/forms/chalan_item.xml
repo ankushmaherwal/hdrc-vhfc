@@ -5,13 +5,16 @@
 		<field name="sender_party" type="senderparty" label="COM_TMS_CHALAN_ITEM_SENDER_PARTY" description="COM_TMS_CHALAN_ITEM_SENDER_PARTY_DESC" class="requiredItem">
 			<option value="">COM_TMS_CHALAN_SELECT_SENDER_PARTY</option>
 		</field>
-		<field name="sender" type="text" label="COM_TMS_CHALAN_ITEM_TREADMARK" description="COM_TMS_CHALAN_ITEM_TREADMARK_DESC" class="requiredItem"/>
+		<field name="receiver_party" type="senderparty" label="COM_TMS_CHALAN_ITEM_RECEIVER_PARTY" description="COM_TMS_CHALAN_ITEM_RECEIVER_PARTY_DESC" class="requiredItem">
+			<option value="">COM_TMS_CHALAN_SELECT_RECEIVER_PARTY</option>
+		</field>
+		<field name="trade_mark" type="text" label="COM_TMS_CHALAN_ITEM_TREADMARK" description="COM_TMS_CHALAN_ITEM_TREADMARK_DESC" class="requiredItem"/>
 		<field name="units" type="number" label="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES" description="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES_DESC" class="requiredItem itemUnits" onchange="updateTotalWeight();"/>
 		<field name="weight" type="number" label="COM_TMS_CHALAN_ITEM_WEIGHT" description="COM_TMS_CHALAN_ITEM_WEIGHT_DESC" class="requiredItem itemWeight" onchange="tms.manageFreight.autoFillFreight(this);updateTotalWeight();"/>
 		<field name="freight" type="number" label="COM_TMS_CHALAN_ITEM_FREIGHT" description="COM_TMS_CHALAN_ITEM_FREIGHT_DESC" class="requiredItem"/>
 		<field name="inam" type="number" label="COM_TMS_CHALAN_ITEM_INAM" description="COM_TMS_CHALAN_ITEM_INAM_DESC" class="requiredItem"/>
-		<field name="receiver" type="text" label="COM_TMS_CHALAN_ITEM_SHOP_NUMBER" description="COM_TMS_CHALAN_ITEM_SHOP_NUMBER_DESC" class="requiredItem"/>
-		<field name="remarks" type="text" label="COM_TMS_CHALAN_ITEM_REMARKS" description="COM_TMS_CHALAN_ITEM_REMARKS_DESC" />
+		<field name="billt_paid" type="number" label="COM_TMS_CHALAN_ITEM_BILLT_PAID" description="COM_TMS_CHALAN_ITEM_BILLT_PAID_DESC" />
+		<field name="billt_paid_id" type="hidden" />
 		<field name="chalan_id" type="hidden" />
 	</fieldset>
 </form>

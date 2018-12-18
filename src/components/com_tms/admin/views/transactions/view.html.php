@@ -11,6 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 /**
  * TMS - Transactions View
@@ -71,11 +72,13 @@ class TmsViewTransactions extends HtmlView
 	 */
 	protected function addToolBar()
 	{
-		JToolBarHelper::title(JText::_('COM_TMS_MANAGE_TRANSACTIONS'), 'address tms');
+		JToolBarHelper::title(Text::_('COM_TMS_MANAGE_TRANSACTIONS'), 'address tms');
 
 		if ($this->canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('transaction.add', 'JTOOLBAR_NEW');
+			JToolBarHelper::custom('transaction.addCreditNote', 'new', '', Text::_('COM_TMS_TRANSACTION_ADD_CREDIT_NOTE'), false);
+			JToolBarHelper::custom('transaction.addDebitNote', 'new', '', Text::_('COM_TMS_TRANSACTION_ADD_DEBIT_NOTE'), false);
 		}
 
 		if ($this->canDo->get('core.edit'))
@@ -85,8 +88,8 @@ class TmsViewTransactions extends HtmlView
 
 		if ($this->canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('transactions.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('transactions.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolBarHelper::publish('transactions.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolBarHelper::unpublish('transactions.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		if ($this->canDo->get('core.delete'))
@@ -109,6 +112,6 @@ class TmsViewTransactions extends HtmlView
 	protected function setDocument()
 	{
 		$document = Factory::getDocument();
-		$document->setTitle(JText::_('COM_TMS_MANAGE_TRANSACTIONS'));
+		$document->setTitle(Text::_('COM_TMS_MANAGE_TRANSACTIONS'));
 	}
 }

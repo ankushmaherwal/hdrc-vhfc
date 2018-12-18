@@ -6,7 +6,11 @@
  */
 
 /* chalan form view - start */
-#tms-wrapper .tms-chalan .subform-repeatable .adminlist thead tr th:first-child, #tms-wrapper .tms-chalan .subform-repeatable .adminlist tbody tr td:first-child, #tms-wrapper .tms-chalan .subform-repeatable .adminlist thead tr th:nth-last-child(2), #tms-wrapper .tms-chalan .subform-repeatable .adminlist tbody tr td:nth-last-child(2){
+#tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist thead tr th:first-child, #tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist tbody tr td:first-child, #tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist thead tr th:nth-last-child(2), #tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist tbody tr td:nth-last-child(2), #tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist thead tr th:nth-last-child(3), #tms-wrapper .tms-chalan .chalan-details .subform-repeatable .adminlist tbody tr td:nth-last-child(3){
+	display:none;
+}
+
+#tms-wrapper .chalan-paid-details .subform-repeatable .adminlist thead tr th:first-child, #tms-wrapper .chalan-paid-details .subform-repeatable .adminlist tbody tr td:first-child{
 	display:none;
 }
 

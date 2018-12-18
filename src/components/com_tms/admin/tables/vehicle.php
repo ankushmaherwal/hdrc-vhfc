@@ -69,4 +69,30 @@ class TmsTableVehicle extends Table
 
 		return parent::store($updateNulls);
 	}
+
+	/**
+	 * Check function
+	 *
+	 * @return  boolean  True on success, false on failure
+	 *
+	 * @see     JTable::check
+	 * @since   1.5
+	 */
+	public function check()
+	{
+		// Check if vehicle already registered
+		$db = Factory::getDbo();
+		$table = Table::getInstance('Vehicle', 'TmsTable', array('dbo', $db));
+		$table->load(array('registration_number' => $this->registration_number));
+
+		// Check for valid name
+		if (trim($table->registration_number) != '')
+		{
+			$this->setError(Text::_('COM_TMS_VEHICLE_ALREADY_REGISTERED'));
+
+			return false;
+		}
+
+		return parent::check();
+	}
 }

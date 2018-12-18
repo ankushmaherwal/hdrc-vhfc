@@ -27,7 +27,9 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 
 		jQuery(document).on('subform-row-add', function(event, row){
 			jQuery(row).find('select').chosen();
-		})
+		});
+
+		jQuery('.chalan-paid-details').prepend("<div><b>Third Party Bill-T Paid</b></div><br>");
 	});
 
 	function updateTotalWeight()
@@ -143,7 +145,15 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 								<div class="controls" id="chalan-total-weight"><h3>0</h3></div>
 							</div>
 						</div>
-						<div><?php echo $this->form->getInput('chalan_items'); ?></div>
+						<div class="chalan-details"><?php echo $this->form->getInput('chalan_items'); ?></div>
+						<?php
+					}
+					elseif ($field->name == "jform[third_party_paid]")
+					{
+						?>
+						<div class="span6">
+							<div class="chalan-paid-details"><?php echo $this->form->getInput('third_party_paid'); ?></div>
+						</div>
 						<?php
 					}
 					else

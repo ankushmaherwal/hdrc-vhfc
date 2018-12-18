@@ -13,6 +13,8 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Component\ComponentHelper;
 
 /**
  * TMS - Chalan Model
@@ -85,7 +87,19 @@ class TmsModelChalan extends AdminModel
 		if (empty($data))
 		{
 			$data = $this->getItem();
-			$data->chalan_items = $this->getChalanItem($data->id);
+			$data->chalan_items     = $this->getChalanItems($data->id);
+			$thirdPartyPaids = $this->getBilltPaid($data->id, true);
+			$data->third_party_paid = array();
+
+			foreach ($thirdPartyPaids as $thirdPartyPaid)
+			{
+				$pData = array();
+
+				$pData['third_party_paid_id'] = $thirdPartyPaid['id'];
+				$pData['third_party_paid'] = $thirdPartyPaid['account_id'];
+				$pData['chalan_billt_paid'] = $thirdPartyPaid['amount'];
+				$data->third_party_paid[] = $pData;
+			}
 		}
 
 		return $data;
@@ -105,7 +119,8 @@ class TmsModelChalan extends AdminModel
 		// Load tms tables
 		Table::addIncludePath(JPATH_ROOT . '/administrator/components/com_tms/tables');
 
-		$valid = $this->validateChalanItems($data['chalan_items']);
+		// Validate chalan items
+		$valid = $this->validateChalanItems($data);
 
 		if (!$valid)
 		{
@@ -117,9 +132,61 @@ class TmsModelChalan extends AdminModel
 			$chalanId = (int) $this->getState($this->getName() . '.id');
 			$result = $this->saveChalanItem($data['chalan_items'], $chalanId);
 
+			$paidEntries = $this->getBilltPaid($chalanId, true);
+			$thirdPartyPaidIds = array();
+
+			if (!empty($paidEntries))
+			{
+				foreach ($paidEntries as $paidEntry)
+				{
+					$thirdPartyPaidIds[] = $paidEntry['id'];
+				}
+			}
+
+			// Save third party billt paid entry
+			if (!empty($data['third_party_paid']))
+			{
+				foreach ($data['third_party_paid'] as $paid)
+				{
+					$paidData = new stdclass;
+					$paidData->id = !empty($paid['third_party_paid_id']) ? $paid['third_party_paid_id'] : '';
+					$paidData->account_id = $paid['third_party_paid'];
+					$paidData->amount = $paid['chalan_billt_paid'];
+					$paidData->chalan_id = $chalanId;
+
+					$this->saveBilltPaid($paidData);
+
+					// Do not delete the updated paid entries
+					if (in_array($paidData->id, $thirdPartyPaidIds) && !empty($paidData->id))
+					{
+						unset($thirdPartyPaidIds[array_search($paidData->id, $thirdPartyPaidIds)]);
+					}
+				}
+
+				// Delete removed bill-t paid entires
+				if (!empty($thirdPartyPaidIds))
+				{
+					foreach ($thirdPartyPaidIds as $thirdPartyPaidId)
+					{
+						$this->deletePaidEntry($thirdPartyPaidId);
+					}
+				}
+			}
+			else
+			{
+				// If all third part paid entries removed then remove all paid entry
+				if (!empty($thirdPartyPaidIds))
+				{
+					foreach ($thirdPartyPaidIds as $thirdPartyPaidId)
+					{
+						$this->deletePaidEntry($thirdPartyPaidId);
+					}
+				}
+			}
+
 			if (!$result)
 			{
-				$this->setError(JText::_('COM_TMS_CHALAN_CHALAN_ITEM_SAVE_ERROR'));
+				$this->setError(Text::_('COM_TMS_CHALAN_CHALAN_ITEM_SAVE_ERROR'));
 
 				return false;
 			}
@@ -142,10 +209,22 @@ class TmsModelChalan extends AdminModel
 	 */
 	public function saveChalanItem($data, $chalanId)
 	{
+		// Get previous paid entries against the chalan items in the chalan
+		$paidEntries = $this->getBilltPaid($chalanId, false);
+		$chalanItemPaidIds = array();
+
+		if (!empty($paidEntries))
+		{
+			foreach ($paidEntries as $paidEntry)
+			{
+				$chalanItemPaidIds[] = $paidEntry['id'];
+			}
+		}
+
 		foreach ($data as $chalanItem)
 		{
 			// If empty chalan item found then delete the chalan item
-			if (empty($chalanItem['sender']) && empty($chalanItem['receiver']) && empty($chalanItem['units']) && empty($chalanItem['freight']) && empty($chalanItem['inam']) && empty($chalanItem['weight']) && empty($chalanItem['sender_party']) && !empty($chalanItem['id']))
+			if (empty($chalanItem['sender_party']) && empty($chalanItem['receiver_party']) && empty($chalanItem['trade_mark']) && empty($chalanItem['units']) && empty($chalanItem['weight']) && empty($chalanItem['freight']) && empty($chalanItem['inam']) && empty($chalanItem['billt_paid']) && !empty($chalanItem['id']))
 			{
 				$chalanItemTable = Table::getInstance('ChalanItem', 'TmsTable', array());
 				$chalanItemTable->load(array('id' => $chalanItem['id']));
@@ -153,7 +232,7 @@ class TmsModelChalan extends AdminModel
 			}
 
 			// If sender or receiver or units or freight or weight is empty then don't save the record
-			if (empty($chalanItem['sender']) || empty($chalanItem['receiver']) || empty($chalanItem['units']) || empty($chalanItem['freight']) || empty($chalanItem['inam']) || empty($chalanItem['sender_party']) || empty($chalanItem['weight']))
+			if (empty($chalanItem['sender_party']) || empty($chalanItem['receiver_party']) || empty($chalanItem['trade_mark']) || empty($chalanItem['units']) || empty($chalanItem['weight']) || empty($chalanItem['freight']) || empty($chalanItem['inam']))
 			{
 				continue;
 			}
@@ -163,22 +242,115 @@ class TmsModelChalan extends AdminModel
 			$chalanItemTable->id = !empty($chalanItem['id']) ? $chalanItem['id'] : '';
 			$chalanItemTable->chalan_id = (int) $chalanId;
 			$chalanItemTable->sender_party = $chalanItem['sender_party'];
-			$chalanItemTable->sender = $chalanItem['sender'];
-			$chalanItemTable->receiver = $chalanItem['receiver'];
+			$chalanItemTable->receiver_party = $chalanItem['receiver_party'];
+			$chalanItemTable->trade_mark = $chalanItem['trade_mark'];
 			$chalanItemTable->units = (int) $chalanItem['units'];
 			$chalanItemTable->weight = (int) $chalanItem['weight'];
 			$chalanItemTable->freight = (int) $chalanItem['freight'];
 			$chalanItemTable->inam = (int) $chalanItem['inam'];
-			$chalanItemTable->remarks = $chalanItem['remarks'];
 
 			// Add entry in chalan item table
 			if (!$chalanItemTable->store())
 			{
 				return false;
 			}
+
+			// Add billt paid entry
+			if (!empty($chalanItem['billt_paid']))
+			{
+				$paidData = new stdclass;
+				$paidData->id = !empty($chalanItem['billt_paid_id']) ? $chalanItem['billt_paid_id'] : '';
+				$paidData->account_id = $chalanItem['receiver_party'];
+				$paidData->amount = $chalanItem['billt_paid'];
+				$paidData->chalan_id = $chalanId;
+				$paidData->chalan_itemid = $chalanItemTable->id;
+
+				// Add bill-t paid entry
+				$billtPaidId = $this->saveBilltPaid($paidData);
+
+				// Update bill-t paid id in the chalan item table
+				$chalanItemTable->billt_paid_id = $billtPaidId;
+				$chalanItemTable->store();
+			}
+
+			// Do not delete the updated paid entries
+			if (in_array($chalanItemTable->billt_paid_id, $chalanItemPaidIds) && !empty($chalanItemTable->billt_paid_id))
+			{
+				unset($chalanItemPaidIds[array_search($chalanItemTable->billt_paid_id, $chalanItemPaidIds)]);
+			}
+		}
+
+		// Delete removed bill-t paid entires
+		if (!empty($chalanItemPaidIds))
+		{
+			foreach ($chalanItemPaidIds as $chalanItemPaidId)
+			{
+				$this->deletePaidEntry($chalanItemPaidId);
+			}
 		}
 
 		return true;
+	}
+
+	public function saveBilltPaid($paidData)
+	{
+		$billtPaidTable = Table::getInstance('BilltPaid', 'TmsTable', array());
+
+		if (!empty($paidData->id))
+		{
+			$billtPaidTable->load(array('id' => $paidData->id));
+		}
+
+		// Add Update paid entry
+		if ($billtPaidTable->save($paidData))
+		{
+			// Add transactions for the paid amount
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tms/models');
+			$transactionModel = JModelLegacy::getInstance('Transaction', 'TmsModel');
+
+			$params = ComponentHelper::getParams('com_tms');
+			$transactionCategory = $params->get('paid_transaction_category', '', 'INT');
+
+			$transactionData = array();
+
+			// If already transaction is added for the paid entry then update the transaction else add new
+			if (!empty($billtPaidTable->transaction_id))
+			{
+				$transactionData['id'] = $billtPaidTable->transaction_id;
+			}
+
+			$transactionData['account_id'] = $paidData->account_id;
+			$transactionData['published']  = 1;
+			$transactionData['category_id']  = $transactionCategory;
+
+			// If paid is negative then add credit entry in the party account else add debit entry
+			if ($paidData->amount > 0)
+			{
+				$transactionData['debit']  = $paidData->amount;
+			}
+			else
+			{
+				$transactionData['credit']  = $paidData->amount;
+			}
+
+			$transactionData['description']  = Text::sprintf("COM_TMS_CHALAN_BILLT_PAID_DESC", $paidData->chalan_id);
+			$transactionModel->save($transactionData);
+
+			if (empty($billtPaidTable->transaction_id))
+			{
+				$transactionId = (int) $transactionModel->getState($transactionModel->getName() . '.id');
+				$billtPaidTable->transaction_id = $transactionId;
+
+				// Update transaction id in the bill-T paid entry
+				$billtPaidTable->store();
+			}
+
+			return $billtPaidTable->id;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	/**
@@ -190,7 +362,7 @@ class TmsModelChalan extends AdminModel
 	 *
 	 * @since   1.0.0
 	 */
-	public function getChalanItem($chalanId)
+	public function getChalanItems($chalanId)
 	{
 		if (empty($chalanId))
 		{
@@ -205,6 +377,17 @@ class TmsModelChalan extends AdminModel
 		$db->setQuery($query);
 		$chalanItems = $db->loadAssocList();
 
+		foreach ($chalanItems as $k => $chalanItem)
+		{
+			if (!empty($chalanItem['billt_paid_id']))
+			{
+				$billtpaidTable = JTable::getInstance('BilltPaid', 'TmsTable', array('dbo', $db));
+				$billtpaidTable->load(array('id' => $chalanItem['billt_paid_id']));
+
+				$chalanItems[$k]['billt_paid'] = $billtpaidTable->amount;
+			}
+		}
+
 		return $chalanItems;
 	}
 
@@ -217,26 +400,74 @@ class TmsModelChalan extends AdminModel
 	 *
 	 * @since   1.0.0
 	 */
-	public function validateChalanItems($items)
+	public function validateChalanItems($data)
 	{
+		// Chalan items
+		$items = $data['chalan_items'];
+
+		// Third party bill-t paid
+		$thirdPartyPaid = $data['third_party_paid'];
+
 		// Count of valid entries
 		$ValidEntries = 0;
 
+		// Total freight for the items
+		$totalItemsFreight = 0;
+
+		// Total bill-t paid
+		$totalBillTPaid = 0;
+
 		foreach ($items as $item)
 		{
-			if (!empty($item['sender']) || !empty($item['receiver']) || !empty($item['weight']) || !empty($item['units']) || !empty($item['freight']) || !empty($item['inam']) || !empty($item['sender_party']))
+			if (!empty($item['sender_party']) || !empty($item['receiver_party']) || !empty($item['trade_mark']) || !empty($item['units']) || !empty($item['weight']) || !empty($item['freight']) || !empty($item['inam']))
 			{
-				if (empty($item['sender']) || empty($item['receiver']) || empty($item['units']) || empty($item['freight']) || empty($item['inam']) || empty($item['weight']) || empty($item['sender_party']))
+				if (empty($item['sender_party']) || empty($item['receiver_party']) || empty($item['trade_mark']) || empty($item['units']) || empty($item['weight']) || empty($item['freight']) || empty($item['inam']))
 				{
-					$this->setError(JText::_('COM_TMS_CHALAN_CHALAN_ITEMS_SAVE_ERROR'));
+					$this->setError(Text::_('COM_TMS_CHALAN_CHALAN_ITEMS_SAVE_ERROR'));
 
 					return false;
 				}
 				else
 				{
+					if (!empty($item['billt_paid']))
+					{
+						if ($item['billt_paid'] > ($item['freight'] * $item['units']))
+						{
+							$accountTable = Table::getInstance('Account', 'TmsTable', array());
+							$accountTable->load(array('id' => $item['sender_party']));
+
+							$this->setError(Text::sprintf('COM_TMS_CHALAN_SAVE_ERROR_GREATER_PAID_AMOUNT', $accountTable->title));
+
+							return false;
+						}
+
+						$totalBillTPaid += !empty($item['billt_paid']) ? $item['billt_paid'] : 0;
+					}
+
+					$totalItemsFreight += $item['freight'] * $item['units'];
 					$ValidEntries++;
 				}
 			}
+		}
+
+		if (!empty($thirdPartyPaid))
+		{
+			foreach ($thirdPartyPaid as $partyPaid)
+			{
+				if (!empty($partyPaid['chalan_billt_paid']))
+				{
+					$totalBillTPaid += $partyPaid['chalan_billt_paid'];
+				}
+			}
+		}
+
+		// Check if correct Bill-T paid is added or not
+		if ($totalBillTPaid != ($totalItemsFreight - $data['total_freight'] + $data['advance']))
+		{
+			$diff = ($totalItemsFreight - $data['total_freight'] + $data['advance']) - ($totalBillTPaid);
+			$this->setError(Text::sprintf('COM_TMS_CHALAN_SAVE_ERROR_BILL_T_PAID_INCORRECT', $diff));
+
+			return false;
 		}
 
 		if (count($ValidEntries))
@@ -264,14 +495,98 @@ class TmsModelChalan extends AdminModel
 
 		if ($return)
 		{
+			// Delete chalan items
 			$db = $this->getDbo();
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__transport_chalan_item'));
 			$query->where($db->quoteName('chalan_id') . ' IN (' . implode(',', $pks) . ')');
 			$db->setQuery($query);
 			$db->execute();
+
+			// Delete chalan items
+			$query = $db->getQuery(true);
+			$query->select('*');
+			$query->from($db->qn('#__transport_billt_paid'));
+			$query->where($db->qn('chalan_id') . ' = ' . (int) $chalanId);
+			$db->setQuery($query);
+			$paidEntries = $db->loadAssocList();
+
+			foreach ($paidEntries as $paidEntry)
+			{
+				$this->deletePaidEntry($paidEntry['id']);
+			}
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Function to get third part paid amount
+	 *
+	 * @param   INT      $chalanId    chalan id
+	 * @param   BOOLEAN  $thirdParty  third party paid
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.0.0
+	 */
+	public function getBilltPaid($chalanId, $thirdParty = false)
+	{
+		if (empty($chalanId))
+		{
+			return false;
+		}
+
+		$db = Factory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('#__transport_billt_paid');
+		$query->where($db->qn('chalan_id') . ' = ' . (int) $chalanId);
+
+		if ($thirdParty)
+		{
+			$query->where($db->qn('chalan_itemid') . ' = 0');
+		}
+		else
+		{
+			$query->where($db->qn('chalan_itemid') . ' != 0');
+		}
+
+		$db->setQuery($query);
+
+		return $db->loadAssocList();
+	}
+
+	public function deletePaidEntry($id)
+	{
+		if (!empty($id))
+		{
+			$billtPaidTable = Table::getInstance('BilltPaid', 'TmsTable', array());
+			$billtPaidTable->load(array('id' => $id));
+
+			// Delete related transactions
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tms/models');
+			$transactionModel = JModelLegacy::getInstance('Transaction', 'TmsModel');
+			$transactionModel->setState('forceDelete', 1);
+			$transactionModel->delete($billtPaidTable->transaction_id);
+
+			// If paid is against chalan item then remove the reference from the chalan item table
+			if (!empty($billtPaidTable->chalan_itemid))
+			{
+				$chalanItemTable = Table::getInstance('ChalanItem', 'TmsTable', array());
+				$chalanItemTable->load(array('id' => $billtPaidTable->chalan_itemid));
+				$chalanItemTable->billt_paid_id = 0;
+				$chalanItemTable->store();
+			}
+
+			// Delete paid entry
+			$billtPaidTable->delete();
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

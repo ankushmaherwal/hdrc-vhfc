@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_vehicle` (
   `owner_contact` int(12),
   `driver_name` varchar(100),
   `driver_contact` int(12),
+  `chakka` int(2),
   `published` tinyint(1) NOT NULL,
   `checked_out` int(11) NOT NULL,
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -115,5 +116,18 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt` (
   `freight` int(5) NOT NULL,
   `advance` int(5) NOT NULL,
   `remarks` varchar(100),
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `transport_billt_paid`
+--
+
+CREATE TABLE IF NOT EXISTS `#__transport_billt_paid` (
+  `id` int(11) NOT NULL auto_increment,
+  `account_id` int(11) NOT NULL,
+  `chalan_itemid` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `transaction_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;

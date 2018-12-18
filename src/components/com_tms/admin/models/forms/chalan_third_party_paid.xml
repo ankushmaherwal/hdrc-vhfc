@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset name="general" addfieldpath="/administrator/components/com_tms/models/fields">
+		<field name="third_party_paid_id" type="hidden" />
+		<field name="third_party_paid" type="senderparty" class="requiredItem" label="COM_TMS_CHALAN_BILLT_PAID_PARTY" description="COM_TMS_CHALAN_BILLT_PAID_PARTY_DESC">
+			<option value="">COM_TMS_CHALAN_SELECT_PARTY_FOR_BILLT_PAID</option>
+		</field>
+		<field name="chalan_billt_paid" type="number" class="requiredItem" label="COM_TMS_CHALAN_ITEM_BILLT_PAID" description="COM_TMS_CHALAN_ITEM_BILLT_PAID_DESC" />
+	</fieldset>
+</form>
