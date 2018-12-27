@@ -91,14 +91,17 @@ class TmsModelChalan extends AdminModel
 			$thirdPartyPaids = $this->getBilltPaid($data->id, true);
 			$data->third_party_paid = array();
 
-			foreach ($thirdPartyPaids as $thirdPartyPaid)
+			if (!empty($thirdPartyPaids))
 			{
-				$pData = array();
+				foreach ($thirdPartyPaids as $thirdPartyPaid)
+				{
+					$pData = array();
 
-				$pData['third_party_paid_id'] = $thirdPartyPaid['id'];
-				$pData['third_party_paid'] = $thirdPartyPaid['account_id'];
-				$pData['chalan_billt_paid'] = $thirdPartyPaid['amount'];
-				$data->third_party_paid[] = $pData;
+					$pData['third_party_paid_id'] = $thirdPartyPaid['id'];
+					$pData['third_party_paid'] = $thirdPartyPaid['account_id'];
+					$pData['chalan_billt_paid'] = $thirdPartyPaid['amount'];
+					$data->third_party_paid[] = $pData;
+				}
 			}
 		}
 

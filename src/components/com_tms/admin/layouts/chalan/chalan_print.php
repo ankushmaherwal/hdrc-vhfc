@@ -39,7 +39,7 @@ if (!empty($formData))
 	$chalanItems = $formData->get('chalan_items');
 	$thirdPartyPaid = $formData->get('third_party_paid');
 	?>
-	<div style="padding:15px;border-style:ridge;" class="chalan-print">
+	<div style="padding:15px;border-style:ridge;page-break-after:always;" class="chalan-print">
 		<div>
 			<table>
 				<tr>
@@ -92,23 +92,22 @@ if (!empty($formData))
 					</td>
 				</tr>
 			</table>
-			<br />
-
 			<table style="border-collapse:collapse;border:1px solid black;">
 				<tr>
 					<th style="width:5%;border:1px solid black;">GM.No.</th>
 					<th style="width:15%;border:1px solid black;">consignor's Name</th>
 					<th style="width:15%;border:1px solid black;">Tread mark</th>
+					<th style="width:15%;border:1px solid black;">Shop No.</th>
 					<th style="width:10%;border:1px solid black;">Weight</th>
 					<th style="width:10%;border:1px solid black;">No. of Boxes</th>
-					<th style="width:10%;border:1px solid black;">Freight</th>
 					<th style="width:10%;border:1px solid black;">Inam</th>
-					<th style="width:15%;border:1px solid black;">Shop No.</th>
+					<th style="width:10%;border:1px solid black;">Freight</th>
 				</tr>
 				<?php
-				$totalUnits = 0;
+				$totalUnits   = 0;
 				$totalFreight = 0;
-				$totalInam = 0;
+				$totalInam    = 0;
+				$paidInParty  = 0;
 
 				for ($i = 0; $i < 15; $i++)
 				{
@@ -135,6 +134,12 @@ if (!empty($formData))
 								$freight -= $chalanItem['billt_paid'];
 							}
 
+							// Update flag if there is party paid entry in chalan
+							if (isset($chalanItem['billt_paid']) && $paidInParty != 1)
+							{
+								$paidInParty = 1;
+							}
+
 							$inam = $chalanItem['inam'] * $chalanItem['units'];
 
 							$inam = empty($inam) ? '' : $inam;
@@ -142,24 +147,35 @@ if (!empty($formData))
 						?>
 						<td style="width:15%;border:1px solid black;"><?php echo $senderParty;?></td>
 						<td style="width:15%;border:1px solid black;"><?php echo $chalanItem['trade_mark'];?></td>
+						<td style="width:15%;border:1px solid black;"><?php echo $receiverParty;?></td>
 						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['weight'];?></td>
 						<td style="width:10%;border:1px solid black;"><?php echo $chalanItem['units'];?></td>
-						<td style="width:10%;border:1px solid black;"><?php echo $freight;?></td>
 						<td style="width:10%;border:1px solid black;"><?php echo $inam;?></td>
-						<td style="width:15%;border:1px solid black;"><?php echo $receiverParty;?></td>
+						<td style="width:10%;border:1px solid black;"><?php echo $freight;?></td>
 					</tr>
 					<?php
-					$totalUnits = $totalUnits + $chalanItem['units'];
+					$totalUnits   = $totalUnits + $chalanItem['units'];
 					$totalFreight = $totalFreight + $freight;
-					$totalInam = $totalInam + ($chalanItem['inam']*$chalanItem['units']);
+					$totalInam    = $totalInam + ($chalanItem['inam']*$chalanItem['units']);
 				}
+
+				$totalAdvance = $formData->get('advance', 0, 'INT');
 				?>
-				<tr>
-					<td colspan="4" style="border:1px solid black;text-align:center;"><?php echo Text::_("COM_TMS_PRINT_CHALAN_TOTAL");?></td>
+				<tr style="text-align:center;">
+					<td colspan="5" style="border:1px solid black;text-align:center;"><?php echo Text::_("COM_TMS_PRINT_CHALAN_TOTAL");?></td>
 					<td style="width:10%;border:1px solid black;"><?php echo $totalUnits;?></td>
-					<td style="width:10%;border:1px solid black;"><?php echo $totalFreight;?></td>
 					<td style="width:15%;border:1px solid black;"><?php echo $totalInam;?></td>
-					<td colspan="2" style="width:15%;border:1px solid black;"></td>
+					<td style="width:10%;border:1px solid black;"><?php echo $totalFreight;?></td>
+				</tr>
+				<tr style="text-align:center;">
+					<td colspan="5" style="width:10%;border:0px;"></td>
+					<td colspan="2" style="width:10%;border:1px solid black;"><?php echo Text::_("Advance");?></td>
+					<td style="width:10%;border:1px solid black;"><?php echo $totalAdvance;?></td>
+				</tr>
+				<tr style="text-align:center;">
+					<td colspan="5" style="width:10%;border:0px;"></td>
+					<td colspan="2" style="width:10%;border:1px solid black;"><?php echo Text::_("Total");?></td>
+					<td style="width:10%;border:1px solid black;"><?php echo ($totalFreight + $totalAdvance);?></td>
 				</tr>
 			</table>
 			<br />
@@ -185,7 +201,6 @@ if (!empty($formData))
 			<?php echo Text::_("COM_TMS_PRINT_CHALAN_DRIVERS_UNDERTAKING");?>
 			</div>
 			<br />
-			<br />
 			<div>
 				<table>
 					<tr>
@@ -198,4 +213,23 @@ if (!empty($formData))
 		</div>
 	</div>
 	<?php
+
+	// Print bill-t for chalan items with paid entry
+	if ($paidInParty)
+	{
+		?>
+		<div id="printChalanBilltContent" class="d-none">
+			<?php
+			foreach ($chalanItems as $chalanItem)
+			{
+				if (isset($chalanItem['billt_paid']) && !empty($chalanItem['billt_paid']))
+				{
+					$layout = new JLayoutFile('billt_print', $basePath = JPATH_SITE . '/administrator/components/com_tms/layouts/chalan');
+					//echo $layout->render($chalanItem);
+				}
+			}
+			?>
+		</div>
+		<?php
+	}
 }

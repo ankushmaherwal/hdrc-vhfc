@@ -37,13 +37,13 @@ abstract class TmsHelper extends ContentHelper
 		$extension = $app->input->get('extension', '', "STRING");
 
 		JHtmlSidebar::addEntry(
-			Text::_('COM_TMS_MANAGE_VEHICLES'),
-			'index.php?option=com_tms&view=vehicles', (($submenu === 'vehicles') ? true : false)
+			Text::_('COM_TMS_MANAGE_ACCOUNTS'),
+			'index.php?option=com_tms&view=accounts', (($submenu === 'accounts') ? true : false)
 		);
 
 		JHtmlSidebar::addEntry(
-			Text::_('COM_TMS_MANAGE_ACCOUNTS'),
-			'index.php?option=com_tms&view=accounts', (($submenu === 'accounts') ? true : false)
+			Text::_('COM_TMS_MANAGE_VEHICLES'),
+			'index.php?option=com_tms&view=vehicles', (($submenu === 'vehicles') ? true : false)
 		);
 
 		JHtmlSidebar::addEntry(
