@@ -92,17 +92,32 @@ class TmsModelFreight extends BaseDatabaseModel
 
 	public function save($freights)
 	{
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tms/tables');
 		$db = Factory::getDbo();
 
 		foreach ($freights as $destination => $freight)
 		{
-			$freightTable = JTable::getInstance('Freight', 'TmsTable', array('dbo', $db));
-			$freightTable->load(array('destination' => $destination));
-			$freightTable->destination = $destination;
-			$freightTable->box_weight  = json_encode($freight);
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName(array('destination', 'box_weight')));
+			$query->from($db->quoteName('#__transport_freight'));
+			$query->where($db->quoteName('destination') . ' = ' . $db->quote($destination));
+			$db->setQuery($query);
+			$data = $db->loadObject();
 
-			if (!$freightTable->store())
+			if (isset($data->destination))
+			{
+				$data->destination = $destination;
+				$data->box_weight = json_encode($freight);
+
+				$result = $db->updateObject('#__transport_freight', $data, 'destination');
+			}
+			else
+			{
+				$data->destination = $destination;
+				$data->box_weight = json_encode($freight);
+				$result = $db->insertObject('#__transport_freight', $data, 'destination');
+			}
+
+			if (empty($result))
 			{
 				return false;
 			}

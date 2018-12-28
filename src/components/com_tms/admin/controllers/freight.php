@@ -46,6 +46,22 @@ class TmsControllerFreight extends FormController
 		$input = $app->input;
 		$data  = $input->get('freightdata', array(), "ARRAY");
 
+		// Remove empty set
+		foreach ($data as $destination => $freight)
+		{
+			foreach($freight as $k => $freightItem)
+			{
+				$data[$destination][$k]['box_weight'] = (int) $data[$destination][$k]['box_weight'];
+				$data[$destination][$k]['freight']    = (int) $data[$destination][$k]['freight'];
+				$data[$destination][$k]['inam']       = (int) $data[$destination][$k]['inam'];
+
+				if (empty($freightItem['box_weight']) && empty($freightItem['freight']) && empty($freightItem['inam']))
+				{
+					unset($data[$destination][$k]);
+				}
+			}
+		}
+
 		$result = $this->validate($data);
 
 		if ($result === true)
@@ -68,12 +84,12 @@ class TmsControllerFreight extends FormController
 
 		foreach ($data as $destination => $freight)
 		{
-			foreach($freight as $freightItem)
+			foreach($freight as $k => $freightItem)
 			{
 				// Check if empty entry for box weight
 				if (empty($freightItem['box_weight']))
 				{
-					$app->enqueueMessage(Text::sprintf("COM_TMS_MANAGE_FREIGHT_DUPLICATE_BOX_WEIGHT_ERROR", $freightItem['box_weight'], $destination), 'error');
+					$app->enqueueMessage(Text::sprintf("COM_TMS_MANAGE_FREIGHT_EMPTY_BOX_WEIGHT_ERROR", $destination), 'error');
 
 					return false;
 				}

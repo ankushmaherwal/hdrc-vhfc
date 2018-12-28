@@ -131,3 +131,13 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt_paid` (
   `transaction_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `transport_freight`
+--
+
+CREATE TABLE IF NOT EXISTS `#__transport_freight` (
+  `destination` varchar(255) NOT NULL,
+  `box_weight` text NOT NULL,
+  PRIMARY KEY  (`destination`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
