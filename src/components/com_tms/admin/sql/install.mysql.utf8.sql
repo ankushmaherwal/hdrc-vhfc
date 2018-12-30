@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt` (
 CREATE TABLE IF NOT EXISTS `#__transport_billt_paid` (
   `id` int(11) NOT NULL auto_increment,
   `account_id` int(11) NOT NULL,
+  `chalan_id` int(11) NOT NULL,
   `chalan_itemid` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL,

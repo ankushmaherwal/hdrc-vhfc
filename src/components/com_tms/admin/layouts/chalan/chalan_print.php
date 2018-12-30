@@ -213,19 +213,32 @@ if (!empty($formData))
 		</div>
 	</div>
 	<?php
-
 	// Print bill-t for chalan items with paid entry
 	if ($paidInParty)
 	{
 		?>
 		<div id="printChalanBilltContent" class="d-none">
 			<?php
+			$count = 0;
 			foreach ($chalanItems as $chalanItem)
 			{
 				if (isset($chalanItem['billt_paid']) && !empty($chalanItem['billt_paid']))
 				{
-					$layout = new JLayoutFile('billt_print', $basePath = JPATH_SITE . '/administrator/components/com_tms/layouts/chalan');
-					//echo $layout->render($chalanItem);
+					$count++;
+					$style = '';
+
+					if ($count%2 == 0)
+					{
+						$style = "page-break-after:always;";
+					}
+					?>
+					<div style="<?php echo $style;?>">
+						<?php
+						$layout = new JLayoutFile('billt_print', $basePath = JPATH_SITE . '/administrator/components/com_tms/layouts/chalan');
+						echo $layout->render($chalanItem);
+						?>
+					</div>
+					<?php
 				}
 			}
 			?>

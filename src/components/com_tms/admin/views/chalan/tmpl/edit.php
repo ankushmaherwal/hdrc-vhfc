@@ -14,7 +14,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 HTMLHelper::_('behavior.formvalidator');
-HTMLHelper::_('formbehavior.chosen', 'select');
+HTMLHelper::_('formbehavior.chosen', 'select', null, array('disable_search_threshold' => 0 ));
 HTMLHelper::_('script', Juri::root() . 'media/com_tms/js/tms.js');
 
 $fieldSetCounter = 0;
@@ -153,6 +153,14 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 						?>
 						<div class="span6">
 							<div class="chalan-paid-details"><?php echo $this->form->getInput('third_party_paid'); ?></div>
+						</div>
+						<?php
+					}
+					elseif ($field->name == "jform[vehicle_id]")
+					{
+						?>
+						<div class="span6">
+							<?php echo $field->renderField();?>
 						</div>
 						<?php
 					}

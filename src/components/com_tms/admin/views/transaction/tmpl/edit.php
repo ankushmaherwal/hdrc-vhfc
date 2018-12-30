@@ -13,6 +13,8 @@ use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\HTML\HTMLHelper;
 
 HTMLHelper::_('behavior.formvalidator');
+HTMLHelper::_('formbehavior.chosen', 'select', null, array('disable_search_threshold' => 0 ));
+
 $fieldSetCounter = 0;
 $id = isset($this->item->id) ? $this->item->id : 0;
 ?>

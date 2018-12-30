@@ -84,12 +84,17 @@ class TmsControllerFreight extends FormController
 
 		foreach ($data as $destination => $freight)
 		{
-			foreach($freight as $k => $freightItem)
+			foreach($freight as $freightItem)
 			{
+				if (empty($freightItem['box_weight']) && empty($freightItem['box_weight']) && empty($freightItem['box_weight']))
+				{
+					continue;
+				}
+
 				// Check if empty entry for box weight
 				if (empty($freightItem['box_weight']))
 				{
-					$app->enqueueMessage(Text::sprintf("COM_TMS_MANAGE_FREIGHT_EMPTY_BOX_WEIGHT_ERROR", $destination), 'error');
+					$app->enqueueMessage(Text::sprintf("COM_TMS_MANAGE_FREIGHT_EMPTY_BOX_WEIGHT_ERROR", $freightItem['box_weight'], $destination), 'error');
 
 					return false;
 				}

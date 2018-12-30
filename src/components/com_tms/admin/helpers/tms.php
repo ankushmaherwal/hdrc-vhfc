@@ -42,11 +42,6 @@ abstract class TmsHelper extends ContentHelper
 		);
 
 		JHtmlSidebar::addEntry(
-			Text::_('COM_TMS_MANAGE_VEHICLES'),
-			'index.php?option=com_tms&view=vehicles', (($submenu === 'vehicles') ? true : false)
-		);
-
-		JHtmlSidebar::addEntry(
 			Text::_('COM_TMS_ACCOUNT_CATEGORY'),
 			'index.php?option=com_categories&view=categories&extension=com_tms.account', ($submenu == 'categories.account') ? true : false
 		);
@@ -59,6 +54,11 @@ abstract class TmsHelper extends ContentHelper
 		JHtmlSidebar::addEntry(
 			Text::_('COM_TMS_TRANSACTION_CATEGORY'),
 			'index.php?option=com_categories&view=categories&extension=com_tms.transaction', ($submenu == 'categories.transaction') ? true : false
+		);
+
+		JHtmlSidebar::addEntry(
+			Text::_('COM_TMS_MANAGE_VEHICLES'),
+			'index.php?option=com_tms&view=vehicles', (($submenu === 'vehicles') ? true : false)
 		);
 
 		JHtmlSidebar::addEntry(

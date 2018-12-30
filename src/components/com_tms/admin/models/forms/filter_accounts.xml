@@ -7,17 +7,6 @@
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
-		<field name="fullordering" type="list" label="COM_TMS_LIST_FULL_ORDERING" description="COM_TMS_LIST_FULL_ORDERING_DESC" onchange="this.form.submit();" default="title ASC">
-			<option value="">JGLOBAL_SORT_BY</option>
-			<option value="id ASC">JGRID_HEADING_ID_ASC</option>
-			<option value="id DESC">JGRID_HEADING_ID_DESC</option>
-			<option value="title ASC">COM_TMS_TITLE_ASC</option>
-			<option value="title DESC">COM_TMS_TITLE_DESC</option>
-			<option value="state ASC">COM_TMS_PUBLISHED_ASC</option>
-			<option value="state DESC">COM_TMS_PUBLISHED_DESC</option>
-			<option value="created ASC">COM_TMS_CREATED_ASC</option>
-			<option value="created DESC">COM_TMS_CREATED_DESC</option>
-		</field>
 		<field name="category_id" type="category" extension="com_tms.account" label="COM_TMS_ACCOUNTS_CATEGORY_FILTER" description="COM_TMS_ACCOUNTS_CATEGORY_FILTER_DESC" onchange="this.form.submit();">
 			<option value="">JOPTION_SELECT_CATEGORY</option>
 		</field>

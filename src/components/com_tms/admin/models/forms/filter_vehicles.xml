@@ -7,6 +7,9 @@
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
+		<field name="owner_name" type="sql" query="SELECT DISTINCT(owner_name) FROM #__transport_vehicle" key_field="owner_name" value_field="owner_name" sql_where="published=1" label="COM_TMS_VEHICLES_OWNER_FILTER" description="COM_TMS_VEHICLES_OWNER_FILTER_DESC" onchange="this.form.submit();">
+			<option value="">COM_TMS_VEHICLES_SELECT_OWNER</option>
+		</field>
 	</fields>
 	<fields name="list">
 		<field name="limit" type="limitbox" label="COM_CONTENT_LIST_LIMIT" description="COM_CONTENT_LIST_LIMIT_DESC" class="input-mini" default="25" onchange="this.form.submit();" />

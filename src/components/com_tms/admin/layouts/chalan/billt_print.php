@@ -39,20 +39,9 @@ if (!empty($chalanItem))
 		$vehicle_number = $vehicleTable->registration_number;
 	}
 	?>
-	<div style="padding:15px;border-style:ridge;page-break-after:always;" class="chalan-print">
+	<div style="padding:15px;border-style:ridge;" class="chalan-print">
 		<div>
 			<table>
-				<tr>
-					<td colspan="3" style="width:30%;text-align:left;">
-						<h4><?php echo Text::sprintf("COM_TMS_PRINT_CHALAN_JURISDICTION", $params->get('ch_jurisdiction', 'XXX'));?></h4>
-					</td>
-					<td style="width:15%;text-align:center;">
-						<h4><?php echo Text::_($params->get('ch_owners_name', 'XXX'));?></h4>
-					</td>
-					<td style="width:30%;text-align:right;">
-						<h4><?php echo Text::sprintf("COM_TMS_PRINT_CHALAN_CONTACT_NUMBER", $params->get('ch_contact_number', 'XXX'));?></h4>
-					</td>
-				</tr>
 				<tr style="text-align:center;">
 					<td style="width:15%;">
 						<h2 style="border-style:solid;border-radius:20px;"><?php echo Text::_($params->get('ch_company_name_short', 'XXX'));?></h2>
@@ -60,12 +49,13 @@ if (!empty($chalanItem))
 					<td colspan="4">
 						<h1><?php echo Text::_($params->get('ch_company_name', 'XXX'));?></h1>
 						<h4><?php echo Text::_($params->get('ch_company_address', 'XXX'));?></h4>
+						<h4><?php echo Text::sprintf("COM_TMS_PRINT_CHALAN_CONTACT_NUMBER", $params->get('ch_contact_number', 'XXX'));?></h4>
 					</td>
 				</tr>
 				<tr style="text-align:center;">
 					<td>
-						<span style="font-weight: bold;"><?php echo Text::_("COM_TMS_PRINT_CHALAN_SNO")?></span>
-						<span><?php echo sprintf('%06d', $chalanItem['id']);?></span>
+						<span style="font-weight: bold;"><?php echo Text::_("COM_TMS_PRINT_BILLT_SNO")?></span>
+						<span><?php echo sprintf('%05d', $chalanItem['id']);?></span>
 					</td>
 					<td>
 						<span style="font-weight: bold;"><?php echo Text::_("COM_TMS_PRINT_CHALAN_DATE")?></span>
@@ -83,15 +73,19 @@ if (!empty($chalanItem))
 			</table>
 		</div>
 		<div>
-			<table>
+			<table style="width:100%;">
 				<tr>
-					<td>
+					<td style="width:70%;">
 						<span style="font-weight: bold;"><?php echo Text::_("COM_TMS_CHALAN_ITEM_SENDER_PARTY")?></span>
 						<?php
 						$accountTable = Table::getInstance('Account', 'TmsTable', array('dbo', $db));
 						$accountTable->load(array('id' => $chalanItem['sender_party']));
 						?>
 						<span><?php echo " : " . $accountTable->title;?></span>
+					</td>
+					<td style="width:30%;text-align:center;">
+						<span style="font-weight: bold;"><?php echo Text::_("Chalan Ref.")?></span>
+						<span><?php echo sprintf('%05d', $chalanItem['chalan_id']);?></span>
 					</td>
 				</tr>
 				<tr>
@@ -103,6 +97,63 @@ if (!empty($chalanItem))
 						?>
 						<span><?php echo " : " . $accountTable->title;?></span>
 					</td>
+				</tr>
+			</table>
+			<table style="border-collapse:collapse;border:1px solid black;text-align:center;width:100%">
+				<tr>
+					<td rowspan="2" style="border:1px solid black;width:25%;">Description</td>
+					<td colspan="2" style="border:1px solid black;width:25%;">No. Of Boxes</td>
+					<td rowspan="2" style="border:1px solid black;width:15%;">Weight</td>
+					<td rowspan="2" style="border:1px solid black;width:15%;">Rate</td>
+					<td rowspan="2" style="border:1px solid black;width:20%;">Freight</td>
+				</tr>
+				<tr>
+					<td style="border:1px solid black;">Kgs.</td>
+					<td style="border:1px solid black;">Qty</td>
+				</tr>
+				<tr>
+					<td style="border:1px solid black;"><?php echo Text::_("Trade mark : ") . $chalanItem['trade_mark'];?></td>
+					<td style="border:1px solid black;"><?php echo $chalanItem['weight'];?></td>
+					<td style="border:1px solid black;"><?php echo $chalanItem['units'];?></td>
+					<td style="border:1px solid black;"><?php echo $chalanItem['weight'];?></td>
+					<td style="border:1px solid black;"><?php echo $chalanItem['freight'];?></td>
+					<td style="border:1px solid black;"><?php echo ($chalanItem['freight'] * $chalanItem['units']);?></td>
+				</tr>
+				<tr>
+					<td style="border:1px solid black;"></td>
+					<td style="border:1px solid black;"></td>
+					<td style="border:1px solid black;"></td>
+					<td style="border:1px solid black;"></td>
+					<td style="border:1px solid black;"></td>
+					<td style="border:1px solid black;"></td>
+				</tr>
+				<tr>
+					<td colspan="4" rowspan="4" style="border:1px solid black;"><?php echo Text::_("COM_TMS_BILLT_NOTE");?></td>
+					<td style="border:1px solid black;"><?php echo Text::_("Inam");?></td>
+					<td style="border:1px solid black;"><?php echo ($chalanItem['inam'] * $chalanItem['units'])?></td>
+				</tr>
+				<tr>
+					<?php
+					$total = ($chalanItem['inam'] * $chalanItem['units']) + ($chalanItem['freight'] * $chalanItem['units']);
+					?>
+					<td style="border:1px solid black;"><?php echo Text::_("Total");?></td>
+					<td style="border:1px solid black;"><?php echo ($chalanItem['inam'] * $chalanItem['units']) + ($chalanItem['freight'] * $chalanItem['units'])?></td>
+				</tr>
+				<tr>
+					<td style="border:1px solid black;"><?php echo Text::_("Advance");?></td>
+					<td style="border:1px solid black;"><?php echo $chalanItem['billt_paid'];?></td>
+				</tr>
+				<tr>
+					<td style="border:1px solid black;"><?php echo Text::_("Balance");?></td>
+					<td style="border:1px solid black;"><?php echo ($total - $chalanItem['billt_paid']);?></td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td colspan="3"></td>
+				</tr>
+				<tr>
+					<td colspan="3">Driver's Sign</td>
+					<td colspan="3">Authorized Sign</td>
 				</tr>
 			</table>
 		</div>
