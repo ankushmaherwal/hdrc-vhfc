@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_account` (
 CREATE TABLE IF NOT EXISTS `#__transport_transaction` (
   `id` int(11) NOT NULL auto_increment,
   `account_id` int(11) NOT NULL,
+  `reference_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
   `debit` int(11) NOT NULL,
   `credit` int(11) NOT NULL,
@@ -90,13 +91,13 @@ CREATE TABLE IF NOT EXISTS `#__transport_chalan_item` (
   `id` int(11) NOT NULL auto_increment,
   `chalan_id` int(11) NOT NULL,
   `sender_party` int(11) NOT NULL,
-  `sender` varchar(100) NOT NULL,
-  `receiver` varchar(100) NOT NULL,
+  `receiver_party` int(11) NOT NULL,
+  `trade_mark` varchar(100) NOT NULL,
   `weight` int(5) NOT NULL,
   `units` int(5) NOT NULL,
   `freight` int(5) NOT NULL,
   `inam` int(5) NOT NULL,
-  `remarks` varchar(100),
+  `billt_paid_id` int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
