@@ -13,11 +13,11 @@ use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Factory;
 
 /**
- * TMS Account Controller
+ * TMS Vehicle Controller
  *
  * @since  1.0.0
  */
-class TmsControllerAccount extends FormController
+class TmsControllerVehicle extends FormController
 {
 	/**
 	 * Implement to allow edit or not
@@ -29,16 +29,16 @@ class TmsControllerAccount extends FormController
 		$return = array();
 		$jInput = Factory::getApplication()->input->post;
 		$model = $this->getModel();
-		$form = $model->getForm();
 		$data = $jInput->get('jform', array(), 'ARRAY');
+		$form = $model->getForm($data);
 		$data = $model->validate($form, $data);
 		$status = $model->save($data);
-		$accountId = (int) $model->getState($model->getName() . '.id');
+		$vehicleId = (int) $model->getState($model->getName() . '.id');
 
-		if (!empty($accountId))
+		if (!empty($vehicleId))
 		{
-			$return['id'] = $accountId;
-			$return['title'] = $data['title'];
+			$return['id'] = $vehicleId;
+			$return['title'] = strtoupper($data['registration_number']);
 		}
 
 		echo new JResponseJson($return);

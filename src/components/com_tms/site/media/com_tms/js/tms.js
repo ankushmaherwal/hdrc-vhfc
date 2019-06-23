@@ -170,8 +170,55 @@ var tms = {
 						window.parent.SqueezeBox.close();
 					}
 				}
+			});
+		}
+	},
+	manageVehicle: {
+		openVehicleForm: function (){
+			SqueezeBox.open(Joomla.getOptions('system.paths').base+'/index.php?option=com_tms&view=vehicle&layout=edit&popup=1&tmpl=component' ,{handler: 'iframe', size: {x: window.innerWidth-250, y: window.innerHeight-150}});
+		},
+		saveVehicle: function (){
+			if (!document.formvalidator.isValid('#adminForm'))
+			{
+				return false;
+			}
 
-		
+			let callurl = Joomla.getOptions('system.paths').base+"/index.php?option=com_tms&task=vehicle.popupSave&tmpl=component&format=json";
+			let formData = jQuery('#adminForm').serialize();
+
+			/* Disable the save button onclick */
+			jQuery('button').attr('disabled', true);
+
+			jQuery.ajax({
+				url: callurl,
+				data: formData,
+				type: "POST",
+				cache: false,
+				success: function(returnedData)
+				{
+					/* To render error and warnings */
+					tms.common.renderMessages(returnedData);
+
+					if (returnedData.data !== null)
+					{
+						if (returnedData.data.id !== '' && returnedData.data.title !=='')
+						{
+							jQuery(".tms-vehicle", parent.document).each(function(i) {
+								jQuery(this).append(jQuery("<option></option>").attr("value", returnedData.data.id).text(returnedData.data.title));
+								window.parent.tmsUpdateChzn(this.id);
+							});
+						}
+
+						/* Set the value of id field */
+						jQuery("#jform_id").val(returnedData.data.id);
+
+						/* Enable the save button once the save operation is completed*/
+						jQuery('button').attr('disabled', false);
+
+						/* Close the squeezebox */
+						window.parent.SqueezeBox.close();
+					}
+				}
 			});
 		}
 	}

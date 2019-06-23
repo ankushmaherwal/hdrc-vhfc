@@ -11,6 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 HTMLHelper::_('behavior.formvalidator');
 HTMLHelper::_('script', Juri::root() . 'media/com_tms/js/tms.js');
@@ -74,7 +75,19 @@ $id = isset($this->item->id) ? $this->item->id : 0;
 		}
 		?>
 		</div>
-		<input type="hidden" name="task" value="vehicle.edit" />
+		<?php
+		$task = ($this->popup) ? 'vehicle.popupSave' : 'vehicle.edit';
+
+		if ($this->popup)
+		{
+			?>
+			<div class="center">
+				<button class="btn btn-large btn-success" onclick='tms.manageVehicle.saveVehicle();'><?php echo Text::_("JAPPLY");?></button>
+			</div>
+			<?php
+		}
+		?>
+		<input type="hidden" name="task" value="<?php echo $task;?>" />
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 </div>

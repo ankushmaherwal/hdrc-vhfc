@@ -6,7 +6,7 @@
 		<field name="destination" type="destinationslist" label="COM_TMS_CHALAN_DESTINATION" description="COM_TMS_CHALAN_DESTINATION_DESC" required="true" default="">
 			<option value="">COM_TMS_CHALAN_SELECT_DESTINATION</option>
 		</field>
-		<field name="vehicle_id" type="sql" query="SELECT id, registration_number FROM #__transport_vehicle" key_field="id" value_field="registration_number" sql_where="published=1" label="COM_TMS_CHALAN_VEHICLE_ID" description="COM_TMS_CHALAN_VEHICLE_ID" required="true" default="">
+		<field name="vehicle_id" type="vehicle" label="COM_TMS_CHALAN_VEHICLE_ID" description="COM_TMS_CHALAN_VEHICLE_ID" required="true" default="">
 			<option value="">COM_TMS_CHALAN_SELECT_VEHICLE</option>
 		</field>
 		<field name="date" type="calendar" label="COM_TMS_CHALAN_DATE" description="COM_TMS_CHALAN_DATE_DESC" required="true" translateformat="true" showtime="true" size="22"/>
