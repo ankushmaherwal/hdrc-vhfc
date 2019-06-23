@@ -11,15 +11,17 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 HTMLHelper::_('behavior.formvalidator');
 HTMLHelper::_('formbehavior.chosen', '#jform_category_id', null, array('disable_search_threshold' => 0 ));
 HTMLHelper::_('formbehavior.chosen', 'select');
+HTMLHelper::_('script', Juri::root() . 'media/com_tms/js/tms.js');
 
 $fieldSetCounter = 0;
 $id = isset($this->item->id) ? $this->item->id : 0;
 ?>
-<div id="tms-wrapper">
+<div id="tms-wrapper" class="container-fluid">
 	<form action="<?php echo 'index.php?option=com_tms&view=account&layout=edit&id=' . (int) $id; ?>" method="POST" name="adminForm" id="adminForm" class="form-validate">
 		<div class="form-horizontal">
 		<?php
@@ -47,13 +49,21 @@ $id = isset($this->item->id) ? $this->item->id : 0;
 					// Create tab for fieldset
 					echo HTMLHelper::_("bootstrap.addTab", "myTab", $tabName, $fieldset->name);
 				}
-
+				?>
+				<div class="row-fluid">
+				<?php
 				// Iterate through the fields and display them
 				foreach ($this->form->getFieldset($fieldset->name) as $field)
 				{
-					echo $field->renderField();
+					?>
+					<div class="span6">
+						<?php echo $field->renderField();?>
+					</div>
+					<?php
 				}
-
+				?>
+				</div>
+				<?php
 				if (count($this->form->getFieldsets()) > 1)
 				{
 					echo HTMLHelper::_("bootstrap.endTab");
@@ -67,7 +77,19 @@ $id = isset($this->item->id) ? $this->item->id : 0;
 		}
 		?>
 		</div>
-		<input type="hidden" name="task" value="account.edit" />
+		<?php
+		$task = ($this->popup) ? 'account.popupSave' : 'account.edit';
+
+		if ($this->popup)
+		{
+			?>
+			<div class="center">
+				<button class="btn btn-large btn-success" onclick='tms.manageAccount.saveAccount();'><?php echo Text::_("JAPPLY");?></button>
+			</div>
+			<?php
+		}
+		?>
+		<input type="hidden" name="task" value="<?php echo $task;?>" />
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</form>
 </div>

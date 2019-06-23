@@ -12,6 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 
 FormHelper::loadFieldClass('list');
 
@@ -99,5 +100,25 @@ class JFormFieldSenderParty extends JFormFieldList
 		$this->loadExternally = 1;
 
 		return $this->getOptions();
+	}
+
+	/**
+	 * Method to get a field input
+	 *
+	 * @return	HTML
+	 *
+	 * @since   1.0.0
+	 */
+	public function getInput()
+	{
+		// Add class to the element to distinguish the element
+		$this->class = "tms-sender-party";
+
+		$html = parent::getInput();
+
+		// Add link to add account 
+		$html .= "<a href='#' onclick='tms.manageAccount.openAccountForm();'>" . Text::_("JGLOBAL_FIELD_ADD") . "</a>";
+
+		return $html;
 	}
 }

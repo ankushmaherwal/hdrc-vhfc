@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset name="general" addfieldpath="/administrator/components/com_categories/models/fields">
-		<field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
 		<field name="registration_number" type="text" label="COM_TMS_VEHICLE_REGISTRATION_NUMBER" description="COM_TMS_VEHICLE_REGISTRATION_NUMBER_DESC" size="50" required="true" />
 		<field name="published" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="chzn-color-state" filter="intval" size="1" default="1">
 			<option value="1">JPUBLISHED</option>
@@ -12,6 +11,7 @@
 		<field name="driver_name" type="text" label="COM_TMS_VEHICLE_DRIVER_NAME" description="COM_TMS_VEHICLE_DRIVER_NAME_DESC" required="true" />
 		<field name="driver_contact" type="number" size="12" class="validate validate-contactnumber" label="COM_TMS_VEHICLE_DRIVER_CONTACT" description="COM_TMS_VEHICLE_DRIVER_CONTACT_DESC" />
 		<field name="chakka" type="number" size="2" label="COM_TMS_VEHICLE_CHAKKA" description="COM_TMS_VEHICLE_CHAKKA_DESC" />
+		<field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
 		<field name="checked_out" type="hidden" filter="unset" />
 		<field name="checked_out_time" type="hidden" filter="unset" />
 		<field name="created" type="hidden" />

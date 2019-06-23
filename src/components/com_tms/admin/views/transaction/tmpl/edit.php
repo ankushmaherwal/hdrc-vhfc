@@ -18,7 +18,7 @@ HTMLHelper::_('formbehavior.chosen', 'select', null, array('disable_search_thres
 $fieldSetCounter = 0;
 $id = isset($this->item->id) ? $this->item->id : 0;
 ?>
-<div id="tms-wrapper">
+<div id="tms-wrapper" class="container-fluid">
 	<form action="<?php echo 'index.php?option=com_tms&layout=edit&id=' . (int) $id; ?>" method="POST" name="adminForm" id="adminForm" class="form-validate">
 		<div class="form-horizontal">
 		<?php
@@ -46,13 +46,21 @@ $id = isset($this->item->id) ? $this->item->id : 0;
 					// Create tab for fieldset
 					echo HTMLHelper::_("bootstrap.addTab", "myTab", $tabName, $fieldset->name);
 				}
-
+				?>
+				<div class="row-fluid">
+				<?php
 				// Iterate through the fields and display them
 				foreach ($this->form->getFieldset($fieldset->name) as $field)
 				{
-					echo $field->renderField();
+					?>
+					<div class="span6">
+						<?php echo $field->renderField();?>
+					</div>
+					<?php
 				}
-
+				?>
+				</div>
+				<?php
 				if (count($this->form->getFieldsets()) > 1)
 				{
 					echo HTMLHelper::_("bootstrap.endTab");

@@ -32,6 +32,9 @@ class TmsViewAccount extends HtmlView
 	 */
 	public function display($tpl = null)
 	{
+		$jInput = Factory::getApplication()->input;
+		$this->popup = $jInput->get('popup', '0', 'INT');
+
 		// Get the Data
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');

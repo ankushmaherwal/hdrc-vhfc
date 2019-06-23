@@ -86,7 +86,7 @@ class TmsTableVehicle extends Table
 		$table->load(array('registration_number' => $this->registration_number));
 
 		// Check for valid name
-		if (trim($table->registration_number) != '')
+		if (trim($table->registration_number) != '' && empty($this->id))
 		{
 			$this->setError(Text::_('COM_TMS_VEHICLE_ALREADY_REGISTERED'));
 

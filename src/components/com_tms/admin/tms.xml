@@ -31,13 +31,11 @@
 		<folder>views</folder>
 		<folder>models</folder>
 	</files>
-	<languages folder="site/language">
-		<language tag="en-GB">en-GB/en-GB.com_tms.ini</language>
-		<language tag="en-GB">en-GB/en-GB.com_tms.sys.ini</language>
-	</languages>
 	<media destination="com_tms" folder="media">
 		<filename>index.html</filename>
 		<folder>images</folder>
+		<folder>css</folder>
+		<folder>js</folder>
 	</media>
 	<administration>
 		<menu link='index.php?option=com_tms'>COM_TMS_MENU</menu>
@@ -52,12 +50,13 @@
 			<folder>models</folder>
 			<folder>views</folder>
 			<folder>controllers</folder>
+			<folder>layouts</folder>
 			<folder>helpers</folder>
 			<folder>language</folder>
 		</files>
 		<languages folder="admin/language">
-			<language tag="en-GB">en-GB/en-GB.com_helloworld.ini</language>
-			<language tag="en-GB">en-GB/en-GB.com_helloworld.sys.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_tms.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_tms.sys.ini</language>
 		</languages>
 	</administration>
 </extension>

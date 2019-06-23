@@ -510,7 +510,7 @@ class TmsModelChalan extends AdminModel
 			$query = $db->getQuery(true);
 			$query->select('*');
 			$query->from($db->qn('#__transport_billt_paid'));
-			$query->where($db->qn('chalan_id') . ' = ' . (int) $chalanId);
+			$query->where($db->qn('chalan_id') . ' IN (' . implode(',', $pks) . ')');
 			$db->setQuery($query);
 			$paidEntries = $db->loadAssocList();
 

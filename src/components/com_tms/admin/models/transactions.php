@@ -69,7 +69,15 @@ class TmsModelTransactions extends ListModel
 
 		if (!empty($search))
 		{
-			$query->where($db->quoteName('t.id') . ' = ' . (int) $search);
+			if (stripos($search, 'id:') === 0)
+			{
+				$query->where($db->quoteName('t.id') . ' = ' . (int) $search);
+			}
+			else
+			{
+				$search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
+				$query->where('(ac.title LIKE ' . $search . ' OR t.description LIKE ' . $search . ')');
+			}
 		}
 
 		// Filter by published state
@@ -84,6 +92,37 @@ class TmsModelTransactions extends ListModel
 			$query->where($db->quoteName('t.published') . ' IN (0, 1)');
 		}
 
+		// Filter by transaction category
+		$category = $this->getState('filter.category_id');
+
+		if (!empty($category))
+		{
+			$query->where($db->quoteName('t.category_id') . ' = ' . (int) $category);
+		}
+
+		// Filter by account
+		$account = $this->getState('filter.account_id');
+
+		if (!empty($account))
+		{
+			$query->where($db->quoteName('t.account_id') . ' = ' . (int) $account);
+		}
+
+		// Filter by account
+		$transactionType = $this->getState('filter.transaction_type');
+
+		if (!empty($transactionType))
+		{
+			if ($transactionType == 'credit')
+			{
+				$query->where($db->quoteName('t.debit') . ' != 0');
+			}
+			else
+			{
+				$query->where($db->quoteName('t.credit') . ' != 0');
+			}
+		}
+
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', $db->quoteName('t.id'));
 		$orderDirn = $this->state->get('list.direction', 'desc');
@@ -91,5 +130,32 @@ class TmsModelTransactions extends ListModel
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;
+	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	protected function populateState($ordering = 't.id', $direction = 'DESC')
+	{
+		$published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
+		$this->setState('filter.published', $published);
+
+		$category = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id', '');
+		$this->setState('filter.category_id', $category);
+
+		$type = $this->getUserStateFromRequest($this->context . '.filter.transaction_type', 'filter_transaction_type', '');
+		$this->setState('filter.transaction_type', $type);
+
+		// List state information.
+		parent::populateState($ordering, $direction);
 	}
 }

@@ -14,6 +14,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 HTMLHelper::_('behavior.formvalidator');
+HTMLHelper::_('behavior.modal');
 HTMLHelper::_('formbehavior.chosen', 'select', null, array('disable_search_threshold' => 0 ));
 HTMLHelper::_('script', Juri::root() . 'media/com_tms/js/tms.js');
 
@@ -31,6 +32,11 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 
 		jQuery('.chalan-paid-details').prepend("<div><b>Third Party Bill-T Paid</b></div><br>");
 	});
+
+	function tmsUpdateChzn(elementId)
+	{
+		jQuery("#"+elementId).trigger("liszt:updated");
+	}
 
 	function updateTotalWeight()
 	{

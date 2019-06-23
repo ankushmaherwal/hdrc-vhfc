@@ -18,6 +18,40 @@ jQuery(document).ready(function(){
 });
 
 var tms = {
+	common: {
+		renderMessages: function (returnedData){
+			if (returnedData.messages !== null)
+			{
+				if (returnedData.messages.error !== null)
+				{
+					jQuery.each(returnedData.messages.error, function(index, value) {
+						Joomla.renderMessages({'error':[value]});
+					});
+
+					jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+				}
+			}
+
+			if (returnedData.messages !== null)
+			{
+				if (returnedData.messages.warning !== null)
+				{
+					jQuery.each(returnedData.messages.warning, function(index, value) {
+						Joomla.renderMessages({'warning':[value]});
+					});
+
+					jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+				}
+			}
+
+			if (returnedData.message !== null && returnedData.message != '')
+			{
+				Joomla.renderMessages({'info':[returnedData.message]});
+
+				jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+			}
+		}
+	},
 	manageFreight: {
 		addFreightEntry: function (obj, destination){
 			var clone = jQuery(obj).parent().parent().parent().clone(false);
@@ -90,4 +124,55 @@ var tms = {
 			}
 		}
 	},
+	manageAccount: {
+		openAccountForm: function (){
+			SqueezeBox.open(Joomla.getOptions('system.paths').base+'/index.php?option=com_tms&view=account&layout=edit&popup=1&tmpl=component' ,{handler: 'iframe', size: {x: window.innerWidth-250, y: window.innerHeight-150}});
+		},
+		saveAccount: function (){
+			if (!document.formvalidator.isValid('#adminForm'))
+			{
+				return false;
+			}
+
+			let callurl = Joomla.getOptions('system.paths').base+"/index.php?option=com_tms&task=account.popupSave&tmpl=component&format=json";
+			let formData = jQuery('#adminForm').serialize();
+
+			/* Disable the save button onclick */
+			jQuery('button').attr('disabled', true);
+
+			jQuery.ajax({
+				url: callurl,
+				data: formData,
+				type: "POST",
+				cache: false,
+				success: function(returnedData)
+				{
+					/* To render error and warnings */
+					tms.common.renderMessages(returnedData);
+
+					if (returnedData.data !== null)
+					{
+						if (returnedData.data.id !== '' && returnedData.data.title !=='')
+						{
+							jQuery(".tms-sender-party", parent.document).each(function(i) {
+								jQuery(this).append(jQuery("<option></option>").attr("value", returnedData.data.id).text(returnedData.data.title));
+								window.parent.tmsUpdateChzn(this.id);
+							});
+						}
+
+						/* Set the value of id field */
+						jQuery("#jform_id").val(returnedData.data.id);
+
+						/* Enable the save button once the save operation is completed*/
+						jQuery('button').attr('disabled', false);
+
+						/* Close the squeezebox */
+						window.parent.SqueezeBox.close();
+					}
+				}
+
+		
+			});
+		}
+	}
 };

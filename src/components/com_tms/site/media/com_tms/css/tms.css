@@ -49,3 +49,7 @@
 	margin-right:15px !important;
 }
 /* set freight view - end*/
+
+#tms-wrapper .row-fluid .span6{
+	margin-left:0px !important;
+}
