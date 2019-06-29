@@ -247,10 +247,10 @@ class TmsModelChalan extends AdminModel
 			$chalanItemTable->sender_party = $chalanItem['sender_party'];
 			$chalanItemTable->receiver_party = $chalanItem['receiver_party'];
 			$chalanItemTable->trade_mark = $chalanItem['trade_mark'];
-			$chalanItemTable->units = (int) $chalanItem['units'];
-			$chalanItemTable->weight = (int) $chalanItem['weight'];
-			$chalanItemTable->freight = (int) $chalanItem['freight'];
-			$chalanItemTable->inam = (int) $chalanItem['inam'];
+			$chalanItemTable->units = (double) $chalanItem['units'];
+			$chalanItemTable->weight = (double) $chalanItem['weight'];
+			$chalanItemTable->freight = (double) $chalanItem['freight'];
+			$chalanItemTable->inam = (double) $chalanItem['inam'];
 
 			// Add entry in chalan item table
 			if (!$chalanItemTable->store())
