@@ -29,6 +29,7 @@
 		<filename>controller.php</filename>
 		<folder>controllers</folder>
 		<folder>views</folder>
+		<folder>media</folder>
 		<folder>models</folder>
 	</files>
 	<media destination="com_tms" folder="media">

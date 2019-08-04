@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_account` (
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_transaction`
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_transaction` (
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_vehicle`
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_vehicle` (
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_chalan`
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_chalan` (
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_chalan_item`
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_chalan_item` (
   `inam` DOUBLE(5,2) NOT NULL,
   `billt_paid_id` int(11),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_billt`
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt` (
   `advance` DOUBLE(5,2) NOT NULL,
   `remarks` varchar(100),
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_billt_paid`
@@ -132,14 +132,14 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt_paid` (
   `amount` DOUBLE(5,2) NOT NULL,
   `transaction_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `transport_freight`
 --
 
 CREATE TABLE IF NOT EXISTS `#__transport_freight` (
-  `destination` varchar(255) NOT NULL,
+  `destination` varchar(100) NOT NULL,
   `box_weight` text NOT NULL,
   PRIMARY KEY  (`destination`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
