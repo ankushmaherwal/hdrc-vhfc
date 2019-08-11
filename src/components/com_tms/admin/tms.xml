@@ -39,6 +39,15 @@
 	</media>
 	<administration>
 		<menu link='index.php?option=com_tms'>COM_TMS_MENU</menu>
+		<submenu>
+			<menu link="option=com_tms&view=accounts">COM_TMS_MENU_MANAGE_ACCOUNTS</menu>
+			<menu link="option=com_categories&view=categories&extension=com_tms.account">COM_TMS_MENU_ACCOUNT_CATEGORY</menu>
+			<menu link="option=com_tms&view=transactions">COM_TMS_MENU_MANAGE_TRANSACTIONS</menu>
+			<menu link="option=com_categories&view=categories&extension=com_tms.transaction">COM_TMS_MENU_TRANSACTION_CATEGORY</menu>
+			<menu link="option=com_tms&view=vehicles">COM_TMS_MENU_MANAGE_VEHICLES</menu>
+			<menu link="option=com_tms&view=chalans">COM_TMS_MENU_MANAGE_CHALANS</menu>
+			<menu link="option=com_tms&view=freight">COM_TMS_MENU_MANAGE_FREIGHT</menu>
+		</submenu>
 		<files folder="admin">
 			<filename>index.html</filename>
 			<filename>config.xml</filename>
@@ -52,7 +61,6 @@
 			<folder>controllers</folder>
 			<folder>layouts</folder>
 			<folder>helpers</folder>
-			<folder>language</folder>
 		</files>
 		<languages folder="admin/language">
 			<language tag="en-GB">en-GB/en-GB.com_tms.ini</language>

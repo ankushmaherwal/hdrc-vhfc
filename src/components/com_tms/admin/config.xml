@@ -2,8 +2,8 @@
 <config>
 	<fieldset name="general" label="COM_TMS_CONFIG_GENERAL">
 		<field name="destinations_list" type="textarea" label="COM_TMS_CONFIG_GENERAL_DESTINATION_LBL" description="COM_TMS_CONFIG_GENERAL_DESTINATION_DESC" cols="10" rows="10"/>
-		<field name="company_cash_account" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_CONFIG_GENERAL_COMPANY_CASH_ACCOUNT_LBL" description="COM_TMS_CONFIG_GENERAL_COMPANY_CASH_ACCOUNT_DESC" default="">
-			<option value="">COM_TMS_CONFIG_GENERAL_SELECT_COMPANY_ACCOUNT</option>
+		<field name="billt_paid_account" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_CONFIG_GENERAL_BILLT_PAID_ACCOUNT_LBL" description="COM_TMS_CONFIG_GENERAL_BILLT_PAID_ACCOUNT_DESC" default="">
+			<option value="">COM_TMS_CONFIG_GENERAL_SELECT_BILLT_PAID_ACCOUNT</option>
 		</field>
 		<field name="paid_transaction_category" type="category" extension="com_tms.transaction" label="COM_TMS_CONFIG_BILLTPAID_TRANSACTION_CATEGORY_LBL" description="COM_TMS_CONFIG_BILLTPAID_TRANSACTION_CATEGORY_DESC" default="">
 			<option value="">COM_TMS_CONFIG_GENERAL_SELECT_BILLTPAID_TRANSACTION_CATEGORY</option>

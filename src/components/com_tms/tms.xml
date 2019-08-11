@@ -29,7 +29,6 @@
 		<filename>controller.php</filename>
 		<folder>controllers</folder>
 		<folder>views</folder>
-		<folder>media</folder>
 		<folder>models</folder>
 	</files>
 	<media destination="com_tms" folder="media">
@@ -52,7 +51,6 @@
 			<folder>views</folder>
 			<folder>controllers</folder>
 			<folder>helpers</folder>
-			<folder>language</folder>
 		</files>
 		<languages folder="admin/language">
 			<language tag="en-GB">en-GB/en-GB.com_tms.ini</language>
