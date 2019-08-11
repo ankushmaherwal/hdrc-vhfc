@@ -93,10 +93,10 @@ CREATE TABLE IF NOT EXISTS `#__transport_chalan_item` (
   `sender_party` int(11) NOT NULL,
   `receiver_party` int(11) NOT NULL,
   `trade_mark` varchar(100) NOT NULL,
-  `weight` DOUBLE(5,2) NOT NULL,
-  `units` DOUBLE(5,2) NOT NULL,
-  `freight` DOUBLE(5,2) NOT NULL,
-  `inam` DOUBLE(5,2) NOT NULL,
+  `weight` DOUBLE(11,2) NOT NULL,
+  `units` DOUBLE(11,2) NOT NULL,
+  `freight` DOUBLE(11,2) NOT NULL,
+  `inam` DOUBLE(11,2) NOT NULL,
   `billt_paid_id` int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
@@ -112,10 +112,10 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt` (
   `sender` varchar(100) NOT NULL,
   `receiver` varchar(100) NOT NULL,
   `destination` varchar(100) NOT NULL,
-  `units` DOUBLE(5,2) NOT NULL,
-  `weight` DOUBLE(5,2) NOT NULL,
-  `freight` DOUBLE(5,2) NOT NULL,
-  `advance` DOUBLE(5,2) NOT NULL,
+  `units` DOUBLE(11,2) NOT NULL,
+  `weight` DOUBLE(11,2) NOT NULL,
+  `freight` DOUBLE(11,2) NOT NULL,
+  `advance` DOUBLE(11,2) NOT NULL,
   `remarks` varchar(100),
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_billt_paid` (
   `account_id` int(11) NOT NULL,
   `chalan_id` int(11) NOT NULL,
   `chalan_itemid` int(11) NOT NULL,
-  `amount` DOUBLE(5,2) NOT NULL,
+  `amount` DOUBLE(11,2) NOT NULL,
   `transaction_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
