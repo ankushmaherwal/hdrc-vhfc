@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset name="general" addfieldpath="/administrator/components/com_categories/models/fields">
-		<field name="account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTION_ACCOUNT_ID" description="COM_TMS_TRANSACTION_ACCOUNT_ID" required="true" default="">
-			<option value="">COM_TMS_TRANSACTION_SELECT_ACCOUNT</option>
-		</field>
-		<field name="category_id" type="categoryedit" extension="com_tms.transaction" label="COM_TMS_TRANSACTION_CATEGORY" description="COM_TMS_TRANSACTION_CATEGORY_DESC" required="true" default="">
-			<option value="">COM_TMS_TRANSACTION_SELECT_TRANSACTION_CATEGORY</option>
-		</field>
-		<field name="debit" type="number" size="11" label="COM_TMS_TRANSACTION_TYPE_DEBIT" description="COM_TMS_TRANSACTION_TYPE_DEBIT_DESC" />
-		<field name="credit" type="number" size="11" label="COM_TMS_TRANSACTION_TYPE_CREDIT" description="COM_TMS_TRANSACTION_TYPE_CREDIT_DESC" />
-		<field name="date" type="calendar" default="NOW" label="COM_TMS_TRANSACTION_DATE" description="COM_TMS_TRANSACTION_DATE_DESC" required="true" />
-		<field name="description" type="textarea" rows="5" cols="50" label="COM_TMS_TRANSACTION_DESC" description="COM_TMS_TRANSACTION_DESC_DESC" required="true" />
-		<field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
-		<field name="published" type="hidden" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="chzn-color-state" filter="intval" size="1" default="1" required="true">
-			<option value="1">JPUBLISHED</option>
-			<option value="0">JUNPUBLISHED</option>
-		</field>
-		<field name="created" type="hidden" />
-		<field name="created_by" type="hidden" />
-		<field name="modified" type="hidden" />
-		<field name="modified_by" type="hidden" />
-	</fieldset>
+    <fieldset name="general" addfieldpath="/administrator/components/com_categories/models/fields">
+        <field name="debit_accounts" type="subform" label="COM_TMS_TRANSACTION_DEBIT_ACCOUNT_ID" description="COM_TMS_TRANSACTION_DEBIT_ACCOUNT_ID_DESC" multiple="true" min="1" max="5" layout="joomla.form.field.subform.repeatable-table" buttons="add,remove" required="true">
+            <form>
+                <field name="debit_account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTION_DEBIT_ACCOUNT_ID" required="true" default="" class="input-medium">
+                    <option value="">COM_TMS_TRANSACTION_SELECT_ACCOUNT</option>
+                </field>
+                <field name="debit_amount" type="number" size="11" label="COM_TMS_TRANSACTION_TYPE_DEBIT" required="true"/>
+            </form>
+        </field>
+        <field name="credit_accounts" type="subform" label="COM_TMS_TRANSACTION_CREDIT_ACCOUNT_ID" description="COM_TMS_TRANSACTION_CREDIT_ACCOUNT_ID_DESC" multiple="true" min="1" max="5" layout="joomla.form.field.subform.repeatable-table" buttons="add,remove" required="true">
+            <form>
+                <field name="credit_account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTION_CREDIT_ACCOUNT_ID" required="true" default="" class="input-medium">
+                    <option value="">COM_TMS_TRANSACTION_SELECT_ACCOUNT</option>
+                </field>
+                <field name="credit_amount" type="number" size="11" label="COM_TMS_TRANSACTION_TYPE_CREDIT" required="true"/>
+            </form>
+        </field>
+        <field name="category_id" type="categoryedit" extension="com_tms.transaction" label="COM_TMS_TRANSACTION_CATEGORY" description="COM_TMS_TRANSACTION_CATEGORY_DESC" required="true" default="">
+            <option value="">COM_TMS_TRANSACTION_SELECT_TRANSACTION_CATEGORY</option>
+        </field>
+        <field name="date" type="calendar" default="NOW" label="COM_TMS_TRANSACTION_DATE" description="COM_TMS_TRANSACTION_DATE_DESC" required="true" />
+        <field name="description" type="textarea" rows="5" cols="50" label="COM_TMS_TRANSACTION_DESC" description="COM_TMS_TRANSACTION_DESC_DESC" required="true" />
+        <field name="id" type="hidden" class="readonly" size="10" default="0" readonly="true"/>
+        <field name="published" type="hidden" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="chzn-color-state" filter="intval" size="1" default="1" required="true">
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+        </field>
+        <field name="created" type="hidden" />
+        <field name="created_by" type="hidden" />
+        <field name="modified" type="hidden" />
+        <field name="modified_by" type="hidden" />
+    </fieldset>
 </form>

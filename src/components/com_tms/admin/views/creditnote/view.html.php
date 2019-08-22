@@ -13,11 +13,11 @@ use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Factory;
 
 /**
- * TMS - Transaction View
+ * TMS - CreditNote View
  *
  * @since  1.0.0
  */
-class TmsViewTransaction extends HtmlView
+class TmsViewCreditNote extends HtmlView
 {
 	protected $form;
 
@@ -74,9 +74,9 @@ class TmsViewTransaction extends HtmlView
 
 		if ($this->canEdit || $this->canCreate)
 		{
-			JToolBarHelper::apply('transaction.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('transaction.save', 'JTOOLBAR_SAVE');
-			JToolbarHelper::save2new('transaction.save2new');
+			JToolBarHelper::apply('creditnote.apply', 'JTOOLBAR_APPLY');
+			JToolBarHelper::save('creditnote.save', 'JTOOLBAR_SAVE');
+			JToolbarHelper::save2new('creditnote.save2new');
 		}
 
 		JToolBarHelper::cancel('transaction.cancel', 'JTOOLBAR_CANCEL');

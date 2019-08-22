@@ -58,28 +58,6 @@ class TmsModelTransactions extends ListModel
 		$query->select('t.*');
 		$query->from($db->quoteName('#__transport_transaction', 't'));
 
-		// Join over the categories.
-		$query->select($db->quoteName('ac.title', 'account_title'));
-		$query->join('LEFT', $db->quoteName('#__transport_account', 'ac') . ' ON ' . $db->quoteName('ac.id') . '=' . $db->quoteName('t.account_id'));
-
-		$query->where($db->quoteName('ac.published') . '=1');
-
-		// Filter: search
-		$search = $this->getState('filter.search');
-
-		if (!empty($search))
-		{
-			if (stripos($search, 'id:') === 0)
-			{
-				$query->where($db->quoteName('t.id') . ' = ' . (int) $search);
-			}
-			else
-			{
-				$search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
-				$query->where('(ac.title LIKE ' . $search . ' OR t.description LIKE ' . $search . ')');
-			}
-		}
-
 		// Filter by published state
 		$published = $this->getState('filter.published');
 
@@ -100,27 +78,28 @@ class TmsModelTransactions extends ListModel
 			$query->where($db->quoteName('t.category_id') . ' = ' . (int) $category);
 		}
 
+		// Filter: search
+		$search = $this->getState('filter.search');
+
+		if (!empty($search))
+		{
+			if (stripos($search, 'id:') === 0)
+			{
+				$query->where($db->quoteName('t.id') . ' = ' . (int) $search);
+			}
+			else
+			{
+				$search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
+				$query->where('(ac.title LIKE ' . $search . ' OR t.description LIKE ' . $search . ')');
+			}
+		}
+
 		// Filter by account
 		$account = $this->getState('filter.account_id');
 
 		if (!empty($account))
 		{
 			$query->where($db->quoteName('t.account_id') . ' = ' . (int) $account);
-		}
-
-		// Filter by account
-		$transactionType = $this->getState('filter.transaction_type');
-
-		if (!empty($transactionType))
-		{
-			if ($transactionType == 'credit')
-			{
-				$query->where($db->quoteName('t.debit') . ' != 0');
-			}
-			else
-			{
-				$query->where($db->quoteName('t.credit') . ' != 0');
-			}
 		}
 
 		// Add the list ordering clause.
@@ -157,5 +136,49 @@ class TmsModelTransactions extends ListModel
 
 		// List state information.
 		parent::populateState($ordering, $direction);
+	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	public function getItems()
+	{
+		$items = parent::getItems();
+		$itemsArray = (array) $items;
+
+		if (!empty($items))
+		{
+			$transactionIds = implode(',', array_column($itemsArray, 'id'));
+
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('tr.*, a.title');
+			$query->from($db->quoteName('#__transport_transaction_reference', 'tr'));
+			$query->join('INNER', $db->quoteName('#__transport_account', 'a') . ' ON (' . $db->quoteName('a.id') . ' = ' . $db->quoteName('tr.account_id') . ')');
+			$query->where($db->quoteName('tr.reference_id') . ' IN ('. $transactionIds . ')');
+			$db->setQuery($query);
+			$transactionReferences = $db->loadObjectList();
+
+			foreach ($items as &$item)
+			{
+				$item->details = array();
+
+				foreach ($transactionReferences as $transactionReference)
+				{
+					if($item->id == $transactionReference->reference_id)
+					{
+						$item->details[] = $transactionReference;
+					}
+				}
+			}
+		}
+
+		return $items;
 	}
 }

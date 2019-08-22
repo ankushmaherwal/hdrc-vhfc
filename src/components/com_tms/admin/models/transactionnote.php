@@ -16,11 +16,11 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
 
 /**
- * TMS - Transaction Model
+ * TMS - Transactionnote Model
  *
  * @since  1.0.0
  */
-class TmsModelTransaction extends JModelAdmin
+abstract class TmsModelTransactionnote extends JModelAdmin
 {
 	/**
 	 * Method to get a table object, load it if necessary.
@@ -52,8 +52,8 @@ class TmsModelTransaction extends JModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm(
-			'com_tms.transaction',
-			'transaction',
+			'com_tms.transactionnote',
+			'transactionnote',
 			array(
 				'control' => 'jform',
 				'load_data' => $loadData
@@ -79,7 +79,7 @@ class TmsModelTransaction extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = Factory::getApplication()->getUserState(
-			'com_tms.edit.transaction.data',
+			'com_tms.edit.transactionnote.data',
 			array()
 		);
 
@@ -113,28 +113,13 @@ class TmsModelTransaction extends JModelAdmin
 			$query->from($db->quoteName('#__transport_transaction_reference'));
 			$query->where($db->quoteName('reference_id') . ' = ' . $item->id);
 			$db->setQuery($query);
-			$transactionReferences = $db->loadObjectList();
+			$transactionReference = $db->loadObject();
 
-			$item->debit_accounts = array();
-			$item->credit_accounts = array();
+			$item->account_id = $transactionReference->account_id;
+			$item->amount = ($transactionReference->debit != 0) ? $transactionReference->debit : $transactionReference->credit;
 
-			foreach ($transactionReferences as $transactionReference)
-			{
-				if ($transactionReference->debit != 0)
-				{
-					$item->debit_accounts[] = array("debit_account_id" => $transactionReference->account_id, "debit_amount" => $transactionReference->debit);
-				}
-				else
-				{
-					$item->credit_accounts[] = array("credit_account_id" => $transactionReference->account_id, "credit_amount" => $transactionReference->credit);
-				}
-			}
-
-			$item->debit_accounts = json_encode($item->debit_accounts);
-			$item->credit_accounts = json_encode($item->credit_accounts);
+			return $item;
 		}
-
-		return $item;
 	}
 
 	/**
@@ -148,69 +133,17 @@ class TmsModelTransaction extends JModelAdmin
 	 */
 	public function save($data)
 	{
-		$db = Factory::getDbo();
-		$accountsInvolvedInTransaction = array();
+		$creditNote = isset($data['creditnote']) ? 1 : 0;
+		$data['note'] = 1;
 
-		$debitAmount = 0;
-		$creditAmount = 0;
-
-		foreach ($data['debit_accounts'] as $debitAccount)
+		if (empty($data['amount']))
 		{
-			// In one transaction one account can be used once eighter for credit or debit
-			if (in_array($debitAccount['debit_account_id'] ,$debitAccounts))
-			{
-				$this->setError(Text::_('COM_TMS_TRANSACTION_ERROR_ACCOUNT_USED_MULTIPLE_TIMES'));
-
-				return false;
-			}
-
-			// Check if transaction is done against valid account
-			$table = Table::getInstance('Account', 'TmsTable', array('dbo', $db));
-			$table->load(array('id' => $debitAccount['debit_account_id']));
-
-			if (empty($table->id))
-			{
-				$this->setError(Text::_('COM_TMS_WARNING_TRANSACTION_AGAINST_INVALID_ACCOUNT'));
-
-				return false;
-			}
-
-			$accountsInvolvedInTransaction[] = $debitAccount['debit_account_id'];
-			$debitAmount += abs($debitAccount['debit_amount']);
-		}
-
-		foreach ($data['credit_accounts'] as $creditAccount)
-		{
-			// In one transaction one account can be used once eighter for credit or debit
-			if (in_array($creditAccount['credit_account_id'] ,$creditAccounts))
-			{
-				$this->setError(Text::_('COM_TMS_TRANSACTION_ERROR_ACCOUNT_USED_MULTIPLE_TIMES'));
-
-				return false;
-			}
-
-			// Check if transaction is done against valid account
-			$table = Table::getInstance('Account', 'TmsTable', array('dbo', $db));
-			$table->load(array('id' => $creditAccount['credit_account_id']));
-
-			if (empty($table->id))
-			{
-				$this->setError(Text::_('COM_TMS_WARNING_TRANSACTION_AGAINST_INVALID_ACCOUNT'));
-
-				return false;
-			}
-
-			$accountsInvolvedInTransaction[] = $creditAccount['credit_account_id'];
-			$creditAmount += abs($creditAccount['credit_amount']);
-		}
-
-		// If debit amount is not equal to credit amount the do not process the transaction
-		if ($creditAmount != $debitAmount)
-		{
-			$this->setError(Text::_('COM_TMS_TRANSACTION_ERROR_DEBIT_CREDIT_AMOUNT_MISSMATCH'));
+			$this->setError(Text::_('COM_TMS_TRANSACTION_ADD_NOTE_INVALID_AMOUNT'));
 
 			return false;
 		}
+
+		$db = Factory::getDbo();
 
 		if (parent::save($data))
 		{
@@ -227,27 +160,22 @@ class TmsModelTransaction extends JModelAdmin
 				$db->execute();
 			}
 
-			// Add entry in reference table for the transaction
-			foreach ($data['debit_accounts'] as $debitAccount)
+			$referenceTransaction = new stdClass();
+			$referenceTransaction->account_id = $data['account_id'];
+			$referenceTransaction->reference_id = $transactionId;
+
+			if ($creditNote)
 			{
-				$referenceTransaction = new stdClass();
-				$referenceTransaction->account_id = $debitAccount['debit_account_id'];
-				$referenceTransaction->reference_id = $transactionId;
-				$referenceTransaction->debit = $debitAccount['debit_amount'];
-				$referenceTransaction->credit = '';
-				$db->insertObject('#__transport_transaction_reference', $referenceTransaction);
+				$referenceTransaction->debit = 0;
+				$referenceTransaction->credit = $data['amount'];
+			}
+			else
+			{
+				$referenceTransaction->debit = $data['amount'];
+				$referenceTransaction->credit = 0;
 			}
 
-			// Add entry in reference table for the transaction
-			foreach ($data['credit_accounts'] as $creditAccount)
-			{
-				$referenceTransaction = new stdClass();
-				$referenceTransaction->account_id = $creditAccount['credit_account_id'];
-				$referenceTransaction->reference_id = $transactionId;
-				$referenceTransaction->debit = '';
-				$referenceTransaction->credit = $creditAccount['credit_amount'];
-				$db->insertObject('#__transport_transaction_reference', $referenceTransaction);
-			}
+			$db->insertObject('#__transport_transaction_reference', $referenceTransaction);
 
 			return true;
 		}

@@ -13,11 +13,11 @@ use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Factory;
 
 /**
- * TMS - Transaction View
+ * TMS - DebitNote View
  *
  * @since  1.0.0
  */
-class TmsViewTransaction extends HtmlView
+class TmsViewDebitNote extends HtmlView
 {
 	protected $form;
 
@@ -74,9 +74,9 @@ class TmsViewTransaction extends HtmlView
 
 		if ($this->canEdit || $this->canCreate)
 		{
-			JToolBarHelper::apply('transaction.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('transaction.save', 'JTOOLBAR_SAVE');
-			JToolbarHelper::save2new('transaction.save2new');
+			JToolBarHelper::apply('debitnote.apply', 'JTOOLBAR_APPLY');
+			JToolBarHelper::save('debitnote.save', 'JTOOLBAR_SAVE');
+			JToolbarHelper::save2new('debitnote.save2new');
 		}
 
 		JToolBarHelper::cancel('transaction.cancel', 'JTOOLBAR_CANCEL');

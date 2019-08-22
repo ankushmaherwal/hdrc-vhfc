@@ -26,11 +26,7 @@ CREATE TABLE IF NOT EXISTS `#__transport_account` (
 
 CREATE TABLE IF NOT EXISTS `#__transport_transaction` (
   `id` int(11) NOT NULL auto_increment,
-  `account_id` int(11) NOT NULL,
-  `reference_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `debit` DOUBLE(11,2) NOT NULL,
-  `credit` DOUBLE(11,2) NOT NULL,
   `published` tinyint(1) NOT NULL,
   `description` varchar(600),
   `date` date NOT NULL DEFAULT '0000-00-00',
@@ -38,6 +34,19 @@ CREATE TABLE IF NOT EXISTS `#__transport_transaction` (
   `created_by` int(11) NOT NULL,
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `transport_transaction_reference`
+--
+
+CREATE TABLE IF NOT EXISTS `#__transport_transaction_reference` (
+  `id` int(11) NOT NULL auto_increment,
+  `account_id` int(11) NOT NULL,
+  `reference_id` int(11) NOT NULL,
+  `debit` DOUBLE(11,2) NOT NULL,
+  `credit` DOUBLE(11,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 

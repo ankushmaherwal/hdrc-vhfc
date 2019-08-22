@@ -313,8 +313,25 @@ class TmsModelChalan extends AdminModel
 
 			$params = ComponentHelper::getParams('com_tms');
 			$transactionCategory = $params->get('paid_transaction_category', '', 'INT');
+			$billtPaidAccount = $params->get('billt_paid_account', '', 'INT');
 
 			$transactionData = array();
+
+			// If paid is negative then add credit entry in the party account else add debit entry
+			if ($paidData->amount > 0)
+			{
+				$transactionData['debit_accounts'] = array("debit_accounts0" => array("debit_account_id" => $paidData->account_id, "debit_amount" => $paidData->amount));
+				$transactionData['credit_accounts'] = array("credit_accounts0" => array("credit_account_id" => $billtPaidAccount, "credit_amount" => $paidData->amount));
+			}
+			else
+			{
+				$transactionData['debit_accounts'] = array("debit_accounts0" => array("debit_account_id" => $billtPaidAccount, "debit_amount" => $paidData->amount));
+				$transactionData['credit_accounts'] = array("credit_accounts0" => array("credit_account_id" => $paidData->account_id, "credit_amount" => $paidData->amount));
+			}
+
+			$transactionData['category_id']  = $transactionCategory;
+			$transactionData['description']  = Text::sprintf("COM_TMS_CHALAN_BILLT_PAID_DESC", $paidData->chalan_id);
+			$transactionData['published']  = 1;
 
 			// If already transaction is added for the paid entry then update the transaction else add new
 			if (!empty($billtPaidTable->transaction_id))
@@ -322,29 +339,14 @@ class TmsModelChalan extends AdminModel
 				$transactionData['id'] = $billtPaidTable->transaction_id;
 			}
 
-			$transactionData['account_id'] = $paidData->account_id;
-			$transactionData['published']  = 1;
-			$transactionData['category_id']  = $transactionCategory;
-
-			// If paid is negative then add credit entry in the party account else add debit entry
-			if ($paidData->amount > 0)
-			{
-				$transactionData['debit']  = $paidData->amount;
-			}
-			else
-			{
-				$transactionData['credit']  = $paidData->amount;
-			}
-
-			$transactionData['description']  = Text::sprintf("COM_TMS_CHALAN_BILLT_PAID_DESC", $paidData->chalan_id);
 			$transactionModel->save($transactionData);
 
+			// Update transaction id in the bill-T paid entry
 			if (empty($billtPaidTable->transaction_id))
 			{
 				$transactionId = (int) $transactionModel->getState($transactionModel->getName() . '.id');
 				$billtPaidTable->transaction_id = $transactionId;
 
-				// Update transaction id in the bill-T paid entry
 				$billtPaidTable->store();
 			}
 

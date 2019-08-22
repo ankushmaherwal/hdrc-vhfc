@@ -13,11 +13,6 @@
 		<field name="account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTION_ACCOUNT_ID" description="COM_TMS_TRANSACTION_ACCOUNT_ID" default="" onchange="this.form.submit();">
 			<option value="">COM_TMS_TRANSACTION_SELECT_ACCOUNT</option>
 		</field>
-		<field name="transaction_type" type="list" label="COM_TMS_TRANSACTION_TYPE" description="COM_TMS_TRANSACTION_DESC" default="" onchange="this.form.submit();">
-			<option value="">COM_TMS_TRANSACTION_SELECT_TRANSACTION_TYPE</option>
-			<option value="credit">COM_TMS_TRANSACTION_TYPE_CREDIT</option>
-			<option value="debit">COM_TMS_TRANSACTION_TYPE_DEBIT</option>
-		</field>
 		<field name="from_date_note" type="note" label="COM_TMS_TRANSACTION_SELECT_TRANSACTION_DATE_FROM" />
 		<field name="from_date" type="calendar" class="input-small" filter="user_utc" showtime="false" todaybutton="true" translateformat="true">
 		</field>

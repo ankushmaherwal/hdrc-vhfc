@@ -13,11 +13,11 @@ use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Factory;
 
 /**
- * TMS Transaction Controller
+ * TMS CreditNote Controller
  *
  * @since  1.0.0
  */
-class TmsControllerTransaction extends FormController
+class TmsControllerCreditNote extends FormController
 {
 	/**
 	 * Implement to allowAdd or not
@@ -37,27 +37,5 @@ class TmsControllerTransaction extends FormController
 	protected function allowEdit($data = Array(), $key = 'id')
 	{
 		return Factory::getUser()->authorise("core.edit", "com_tms");
-	}
-
-	/**
-	 * Redirect user to transactionnote view to add credit entry
-	 *
-	 * @return bool
-	 */
-	public function addCreditNote()
-	{
-		// Redirect to the edit screen to add credit note.
-		$this->setRedirect('index.php?option=com_tms&view=creditnote&layout=edit');
-	}
-
-	/**
-	 * Redirect user to transactionnote view to add debit entry
-	 *
-	 * @return bool
-	 */
-	public function addDebitNote()
-	{
-		// Redirect to the edit screen to add credit note.
-		$this->setRedirect('index.php?option=com_tms&view=debitnote&layout=edit');
 	}
 }
