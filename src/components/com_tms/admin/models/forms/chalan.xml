@@ -10,8 +10,8 @@
 			<option value="">COM_TMS_CHALAN_SELECT_VEHICLE</option>
 		</field>
 		<field name="date" type="calendar" label="COM_TMS_CHALAN_DATE" description="COM_TMS_CHALAN_DATE_DESC" required="true" translateformat="true" showtime="true" size="22"/>
-		<field name="total_freight" type="number" label="COM_TMS_CHALAN_TOTLA_FREIGHT" description="COM_TMS_CHALAN_TOTLA_FREIGHT_DESC" required="true"/>
-		<field name="advance" type="number" required="true" label="COM_TMS_CHALAN_ADVANCE" description="COM_TMS_CHALAN_ADVANCE_DESC" />
+		<field name="total_freight" type="number" label="COM_TMS_CHALAN_TOTLA_FREIGHT" description="COM_TMS_CHALAN_TOTLA_FREIGHT_DESC" required="true" onchange="updateBilltPaidAmount();" />
+		<field name="advance" type="number" required="true" label="COM_TMS_CHALAN_ADVANCE" description="COM_TMS_CHALAN_ADVANCE_DESC" onchange="updateBilltPaidAmount();" />
 		<field name="drivers_contact" type="number" class="validate validate-contactnumber" label="COM_TMS_CHALAN_DRIVER_CONTACT" description="COM_TMS_CHALAN_DRIVER_CONTACT_DESC"/>
 		<field name="chalan_items" type="subform" required="true" formsource="administrator/components/com_tms/models/forms/chalan_item.xml" multiple="true" min="10" layout="joomla.form.field.subform.repeatable-table" />
 		<field name="third_party_paid" type="subform" formsource="administrator/components/com_tms/models/forms/chalan_third_party_paid.xml" multiple="true" min="0" layout="joomla.form.field.subform.repeatable-table" />

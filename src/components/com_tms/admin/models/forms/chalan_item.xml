@@ -9,9 +9,9 @@
 			<option value="">COM_TMS_CHALAN_SELECT_RECEIVER_PARTY</option>
 		</field>
 		<field name="trade_mark" type="text" label="COM_TMS_CHALAN_ITEM_TREADMARK" description="COM_TMS_CHALAN_ITEM_TREADMARK_DESC" class="requiredItem"/>
-		<field name="units" type="number" label="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES" description="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES_DESC" class="requiredItem itemUnits" onchange="updateTotalWeight();"/>
+		<field name="units" type="number" label="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES" description="COM_TMS_CHALAN_ITEM_NUMBER_OF_BOXES_DESC" class="requiredItem itemUnits" onchange="updateTotalWeight();updateBilltPaidAmount();"/>
 		<field name="weight" type="number" label="COM_TMS_CHALAN_ITEM_WEIGHT" description="COM_TMS_CHALAN_ITEM_WEIGHT_DESC" class="requiredItem itemWeight" onchange="tms.manageFreight.autoFillFreight(this);updateTotalWeight();"/>
-		<field name="freight" type="number" label="COM_TMS_CHALAN_ITEM_FREIGHT" description="COM_TMS_CHALAN_ITEM_FREIGHT_DESC" class="requiredItem"/>
+		<field name="freight" type="number" label="COM_TMS_CHALAN_ITEM_FREIGHT" description="COM_TMS_CHALAN_ITEM_FREIGHT_DESC" class="requiredItem itemFreight" onchange="updateBilltPaidAmount();"/>
 		<field name="inam" type="number" label="COM_TMS_CHALAN_ITEM_INAM" description="COM_TMS_CHALAN_ITEM_INAM_DESC" class="requiredItem"/>
 		<field name="billt_paid" type="number" label="COM_TMS_CHALAN_ITEM_BILLT_PAID" description="COM_TMS_CHALAN_ITEM_BILLT_PAID_DESC" />
 		<field name="billt_paid_id" type="hidden" />

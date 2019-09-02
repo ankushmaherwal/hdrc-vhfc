@@ -56,6 +56,42 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 		jQuery('#tms-wrapper #chalan-total-weight h3').html(totalWeight);
 	}
 
+	function updateBilltPaidAmount()
+	{
+		let totalFreight = parseInt(jQuery("#jform_total_freight").val());
+		let totalAdvance = parseInt(jQuery("#jform_advance").val());
+		let totalItemsFreight = 0;
+
+		jQuery('.subform-repeatable-group').each(function(){
+			let units = jQuery(this).find('td .itemUnits').val();
+			let freight = jQuery(this).find('td .itemFreight').val();
+
+			if (jQuery.isNumeric(units) && jQuery.isNumeric(freight))
+			{
+				totalItemsFreight = (units*freight) + totalItemsFreight;
+			}
+		});
+
+		if (jQuery.isNumeric(totalItemsFreight) && jQuery.isNumeric(totalFreight) && jQuery.isNumeric(totalAdvance))
+		{
+			let totalBilltPaid = (totalItemsFreight - totalFreight + totalAdvance);
+			jQuery('#tms-wrapper #chalan-total-billt-paid h3').html(totalBilltPaid);
+
+			if (totalBilltPaid > 0)
+			{
+				jQuery('#tms-wrapper #chalan-total-billt-paid h3').css('color', 'green');
+			}
+			else if (totalBilltPaid < 0)
+			{
+				jQuery('#tms-wrapper #chalan-total-billt-paid h3').css('color', 'red');
+			}
+			else
+			{
+				jQuery('#tms-wrapper #chalan-total-billt-paid h3').css('color', 'black');
+			}
+		}
+	}
+
 	Joomla.submitbutton = function(task)
 	{
 		jQuery('.subform-repeatable-group').each(function(){
@@ -149,6 +185,14 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 									<label id="chalan-total-weight-lbl" for="chalan-total-weight"><?php echo Text::_("COM_TMS_CHALAN_ITEM_TOTAL_WEIGHT");?></label>
 								</div>
 								<div class="controls" id="chalan-total-weight"><h3>0</h3></div>
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<div class="control-label">
+									<label id="chalan-total-billt-paid-lbl" for="chalan-total-billt-paid"><?php echo Text::_("COM_TMS_CHALAN_ITEM_TOTAL_BILLT_PAID");?></label>
+								</div>
+								<div class="controls" id="chalan-total-billt-paid"><h3>0</h3></div>
 							</div>
 						</div>
 						<div class="chalan-details"><?php echo $this->form->getInput('chalan_items'); ?></div>
