@@ -75,7 +75,6 @@ class TmsViewCreditNote extends HtmlView
 		if ($this->canEdit || $this->canCreate)
 		{
 			JToolBarHelper::apply('creditnote.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('creditnote.save', 'JTOOLBAR_SAVE');
 			JToolbarHelper::save2new('creditnote.save2new');
 		}
 

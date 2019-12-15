@@ -1,22 +1,3 @@
-jQuery(document).ready(function(){
-	document.formvalidator.setHandler('contactnumber', function (value) {
-
-		if (isNaN(value))
-		{
-			return false;
-		}
-
-		if (value.length === 10)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	});
-});
-
 var tms = {
 	common: {
 		renderMessages: function (returnedData){
@@ -221,5 +202,54 @@ var tms = {
 				}
 			});
 		}
+	},
+	transactions: {
+		openStatementForm: function (){
+			SqueezeBox.open(Joomla.getOptions('system.paths').base+'/index.php?option=com_tms&view=transactions&layout=statement&tmpl=component' ,{handler: 'iframe', size: {x: window.innerWidth-250, y: window.innerHeight-150}});
+		},
+		generateStatement: function (){
+			let callurl = Joomla.getOptions('system.paths').base+"/index.php?option=com_tms&task=transactions.generateStatement&tmpl=component&format=json";
+			let formData = jQuery('#adminForm').serialize();
+
+			jQuery.ajax({
+				url: callurl,
+				data: formData,
+				type: "POST",
+				cache: false,
+				success: function(returnedData)
+				{
+					/* To render error and warnings */
+					tms.common.renderMessages(returnedData);
+
+					if (returnedData.data !== null)
+					{
+						/* Close the squeezebox */
+						window.parent.SqueezeBox.close();
+					}
+				}
+			});
+		}
 	}
 };
+
+jQuery(document).ready(function(){
+	if (document.formvalidator != undefined)
+	{
+		document.formvalidator.setHandler('contactnumber', function (value) {
+
+			if (isNaN(value))
+			{
+				return false;
+			}
+
+			if (value.length === 10)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		});
+	}
+});

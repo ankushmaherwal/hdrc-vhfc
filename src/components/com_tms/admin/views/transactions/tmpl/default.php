@@ -12,11 +12,28 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
 
+HTMLHelper::_('behavior.modal');
 HTMLHelper::_('formbehavior.chosen', 'select');
+HTMLHelper::_('script', Juri::root() . 'media/com_tms/js/tms.js');
 
 $listOrder     = $this->escape($this->state->get('list.ordering'));
 $listDirn      = $this->escape($this->state->get('list.direction'));
+
+Factory::getDocument()->addScriptDeclaration('
+	Joomla.submitbutton = function(task)
+	{
+		if (task == "getAccountStatement")
+		{
+			tms.transactions.openStatementForm();
+		}
+		else
+		{
+			Joomla.submitform(task, document.getElementById("adminForm"));
+		}
+	};
+');
 ?>
 <form action="index.php?option=com_tms&view=transactions" method="post" id="adminForm" name="adminForm">
 	<div id="tms-wrapper">

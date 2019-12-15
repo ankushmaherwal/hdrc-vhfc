@@ -25,6 +25,7 @@ Text::script("COM_TMS_CHALAN_ITEM_LBL");
 <script>
 	jQuery(document).ready(function (){
 		updateTotalWeight();
+		updateBilltPaidAmount();
 
 		jQuery(document).on('subform-row-add', function(event, row){
 			jQuery(row).find('select').chosen();

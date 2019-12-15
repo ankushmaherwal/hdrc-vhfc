@@ -49,15 +49,18 @@ class TmsTableTransaction extends Table
 
 		if ($this->id)
 		{
-			// Existing item
 			$this->modified_by = $userId;
 		}
 		else
 		{
-			// New item
 			if (!(int) $this->created)
 			{
 				$this->created = $date;
+			}
+
+			if (empty($this->date))
+			{
+				$this->date = $date;
 			}
 
 			if (empty($this->created_by))

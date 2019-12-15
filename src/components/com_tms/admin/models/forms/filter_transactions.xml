@@ -7,18 +7,14 @@
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
-		<field name="category_id" type="category" extension="com_tms.transaction" label="COM_TMS_TRANSACTIONS_CATEGORY_FILTER" description="COM_TMS_TRANSACTIONS_CATEGORY_FILTER_DESC" onchange="this.form.submit();">
-			<option value="">JOPTION_SELECT_CATEGORY</option>
-		</field>
-		<field name="account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTION_ACCOUNT_ID" description="COM_TMS_TRANSACTION_ACCOUNT_ID" default="" onchange="this.form.submit();">
+		<field name="account_id" type="sql" query="SELECT id, title FROM #__transport_account" key_field="id" value_field="title" sql_where="published=1" label="COM_TMS_TRANSACTIONS_ACCOUNTS_TITLE" default="" onchange="this.form.submit();">
 			<option value="">COM_TMS_TRANSACTION_SELECT_ACCOUNT</option>
 		</field>
-		<field name="from_date_note" type="note" label="COM_TMS_TRANSACTION_SELECT_TRANSACTION_DATE_FROM" />
-		<field name="from_date" type="calendar" class="input-small" filter="user_utc" showtime="false" todaybutton="true" translateformat="true">
+		<field name="category_id" type="category" extension="com_tms.transaction" label="COM_TMS_ACCOUNTS_CATEGORY_FILTER" onchange="this.form.submit();">
+			<option value="">JOPTION_SELECT_CATEGORY</option>
 		</field>
-		<field name="to_date_note" type="note" label="COM_TMS_TRANSACTION_SELECT_TRANSACTION_DATE_TO" />
-		<field name="to_date" type="calendar" class="input-small" filter="user_utc" showtime="false" todaybutton="true" translateformat="true">
-		</field>
+		<field name="from_date" type="calendar" class="input-small" filter="user_utc" showtime="false" todaybutton="true" label="COM_TMS_TRANSACTIONS_ACCOUNTS_FROM_DATE" translateformat="true" />
+		<field name="to_date" type="calendar" class="input-small" filter="user_utc" showtime="false" todaybutton="true" label="COM_TMS_TRANSACTIONS_ACCOUNTS_TO_DATE" translateformat="true" />
 	</fields>
 	<fields name="list">
 		<field name="limit" type="limitbox" label="COM_CONTENT_LIST_LIMIT" description="COM_CONTENT_LIST_LIMIT_DESC" class="input-mini" default="25" onchange="this.form.submit();" />

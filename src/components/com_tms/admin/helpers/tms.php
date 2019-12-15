@@ -12,6 +12,8 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /**
  * TMS component helper.
@@ -70,5 +72,42 @@ abstract class TmsHelper extends ContentHelper
 			Text::_('COM_TMS_MANAGE_FREIGHT'),
 			'index.php?option=com_tms&view=freight', (($submenu === 'freight') ? true : false)
 		);
+	}
+
+	/**
+	 * Method to generate pdf from html
+	 *
+	 * @param   string  $html      replacement data for tags
+	 * @param   string  $pdffile   name of pdf file
+	 * @param   string  $download  int
+	 *
+	 * @return  string  html with css applied
+	 */
+	public static function generatePdf($html, $pdffile, $download = 0)
+	{
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
+
+		require_once  JPATH_SITE . "/libraries/vendor/dompdf/autoload.inc.php";
+
+		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head><meta http-equiv="Content-Type" content="charset=utf-8" /><style type="text/css">* {font-family: "dejavu sans" !important}</style></head><body>' . $html . '</body></html>';
+
+		if (get_magic_quotes_gpc())
+		{
+			$html = stripslashes($html);
+		}
+
+		// Set font for the pdf download.
+		$options = new Options;
+		$options->setDefaultFont('DeJaVu Sans');
+
+		$dompdf = new DOMPDF($options);
+		$dompdf->loadHTML($html, 'UTF-8');
+
+		// Set the page size and oriendtation.
+		$dompdf->setPaper('A4', 'portrait');
+
+		$dompdf->render();
+		$dompdf->stream($pdffile);
 	}
 }

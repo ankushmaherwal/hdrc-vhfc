@@ -58,6 +58,9 @@ class TmsModelTransactions extends ListModel
 		$query->select('t.*');
 		$query->from($db->quoteName('#__transport_transaction', 't'));
 
+		// Join over transaction reference table
+		$query->join('INNER', $db->qn('#__transport_transaction_reference', 'tr') . ' ON (' . $db->qn('t.id') . ' = ' . $db->qn('tr.reference_id') . ')');
+
 		// Filter by published state
 		$published = $this->getState('filter.published');
 
@@ -78,6 +81,27 @@ class TmsModelTransactions extends ListModel
 			$query->where($db->quoteName('t.category_id') . ' = ' . (int) $category);
 		}
 
+		// Filter by account
+		$account = $this->getState('filter.account_id');
+
+		if (!empty($account))
+		{
+			$query->where($db->quoteName('tr.account_id') . ' = ' . (int) $account);
+		}
+
+		// Filter by date
+		if ($this->getState('filter.from_date', ''))
+		{
+			$fromDate = JFactory::getDate($this->getState('filter.from_date', ''))->Format('Y-m-d');
+			$query->where('DATE(t.date)' . ' >= ' . $db->quote($fromDate));
+		}
+
+		if ($this->getState('filter.to_date', ''))
+		{
+			$toDate = JFactory::getDate($this->getState('filter.to_date', ''))->Format('Y-m-d');
+			$query->where('DATE(t.date)' . ' <= ' . $db->quote($toDate));
+		}
+
 		// Filter: search
 		$search = $this->getState('filter.search');
 
@@ -94,17 +118,12 @@ class TmsModelTransactions extends ListModel
 			}
 		}
 
-		// Filter by account
-		$account = $this->getState('filter.account_id');
-
-		if (!empty($account))
-		{
-			$query->where($db->quoteName('t.account_id') . ' = ' . (int) $account);
-		}
-
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', $db->quoteName('t.id'));
 		$orderDirn = $this->state->get('list.direction', 'desc');
+
+		// Make sure that unique records are fetched
+		$query->group($db->quoteName('t.id'));
 
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
@@ -133,6 +152,12 @@ class TmsModelTransactions extends ListModel
 
 		$type = $this->getUserStateFromRequest($this->context . '.filter.transaction_type', 'filter_transaction_type', '');
 		$this->setState('filter.transaction_type', $type);
+
+		$fromDate = $this->getUserStateFromRequest($this->context . '.filter.from_date', 'filter_from_date', '');
+		$this->setState('filter.from_date', $fromDate);
+
+		$toDate = $this->getUserStateFromRequest($this->context . '.filter.to_date', 'filter_to_date', '');
+		$this->setState('filter.to_date', $toDate);
 
 		// List state information.
 		parent::populateState($ordering, $direction);

@@ -295,6 +295,15 @@ class TmsModelChalan extends AdminModel
 		return true;
 	}
 
+	/**
+	 * Function to add billt paid amount
+	 *
+	 * @param   ARRAY  $paidData  chalan item data
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.0.0
+	 */
 	public function saveBilltPaid($paidData)
 	{
 		$billtPaidTable = Table::getInstance('BilltPaid', 'TmsTable', array());
@@ -329,9 +338,10 @@ class TmsModelChalan extends AdminModel
 				$transactionData['credit_accounts'] = array("credit_accounts0" => array("credit_account_id" => $paidData->account_id, "credit_amount" => $paidData->amount));
 			}
 
-			$transactionData['category_id']  = $transactionCategory;
-			$transactionData['description']  = Text::sprintf("COM_TMS_CHALAN_BILLT_PAID_DESC", $paidData->chalan_id);
+			$transactionData['category_id'] = $transactionCategory;
+			$transactionData['description'] = Text::sprintf("COM_TMS_CHALAN_BILLT_PAID_DESC", $paidData->chalan_id);
 			$transactionData['published']  = 1;
+			$transactionData['date'] = Factory::getDate()->toSql();
 
 			// If already transaction is added for the paid entry then update the transaction else add new
 			if (!empty($billtPaidTable->transaction_id))

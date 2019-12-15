@@ -97,6 +97,8 @@ class TmsViewTransactions extends HtmlView
 			JToolBarHelper::deleteList('', 'transactions.delete', 'JTOOLBAR_DELETE');
 		}
 
+		JToolBarHelper::custom('getAccountStatement', 'print', '', Text::_('COM_TMS_TRANSACTION_PRINT'), false);
+
 		if ($this->canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();

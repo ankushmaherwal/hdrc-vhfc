@@ -9,6 +9,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Factory;
@@ -87,5 +88,52 @@ class TmsModelAccount extends JModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Method to get the account balance.
+	 * 
+	 * @param   array  $accountId  Account Id.
+	 *
+	 * @return  INT  Account balance.
+	 *
+	 * @since   1.0.0
+	 */
+	public function getBalance($accountId)
+	{
+		$accontTable = $this->getTable();
+		$accontTable->load($accountId);
+
+		if (empty($accontTable->id))
+		{
+			return false;
+		}
+
+		JLoader::import('components.com_tms.models.transactions', JPATH_ADMINISTRATOR);
+		$transactionsModel = BaseDatabaseModel::getInstance('Transactions', 'TmsModel', array('ignore_request' => true));
+		$transactionsModel->setState('filter.account_id', $accountId);
+		$transactionsModel->setState('filter.published', 1);
+		$transactions = $transactionsModel->getItems();
+		$balance = 0;
+
+		foreach ($transactions as $transaction)
+		{
+			foreach ($transaction->details as $detail)
+			{
+				if ($detail->account_id == $accountId)
+				{
+					if (!empty($detail->credit))
+					{
+						$balance += $detail->credit;
+					}
+					else
+					{
+						$balance -= $detail->debit;
+					}
+				}
+			}
+		}
+
+		return $balance;
 	}
 }

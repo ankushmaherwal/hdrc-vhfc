@@ -75,7 +75,6 @@ class TmsViewDebitNote extends HtmlView
 		if ($this->canEdit || $this->canCreate)
 		{
 			JToolBarHelper::apply('debitnote.apply', 'JTOOLBAR_APPLY');
-			JToolBarHelper::save('debitnote.save', 'JTOOLBAR_SAVE');
 			JToolbarHelper::save2new('debitnote.save2new');
 		}
 
